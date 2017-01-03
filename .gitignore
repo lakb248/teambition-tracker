@@ -1,0 +1,22 @@
+# node module #
+node_modules/
+
+.DS_Store
+
+# test coveage result #
+test/coverage
+
+# sass cache #
+.sass-cache/
+
+# log file #
+*.log
+
+# project doc #
+doc/
+
+# build directory #
+build/
+
+# code coverage directory #
+coverage/
