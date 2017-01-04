@@ -9,8 +9,7 @@ var autoprefixer = require('autoprefixer');
 
 module.exports = {
     entry: {
-        build: './src/index.js',
-        vendor: ['vue', 'vue-resource', 'vue-router']
+        app: './app/index.js'
     },
     output: {
         path: path.resolve('build') + '/',
@@ -21,7 +20,7 @@ module.exports = {
     module: {
         rules: [{
             test: /\.js$/,
-            loader: 'babel',
+            loader: 'babel-loader',
             exclude: /node_modules/
         }, {
             test: /\.vue$/,
@@ -47,6 +46,19 @@ module.exports = {
             vue: {
                 postcss: [require('postcss-cssnext')({browsers: [
                     '> 1%', 'last 5 Android versions', 'last 5 iOS versions']})]
+            }
+        }),
+        new webpack.optimize.CommonsChunkPlugin({
+            name: 'common',
+            minChunks: function (module, count) {
+                // any required modules inside node_modules are extracted to vendor
+                return (
+                    module.resource &&
+                    /\.js$/.test(module.resource) &&
+                    module.resource.indexOf(
+                        path.join(__dirname, 'node_modules')
+                    ) === 0
+                )
             }
         })
     ]
