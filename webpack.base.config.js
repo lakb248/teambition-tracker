@@ -28,7 +28,7 @@ module.exports = {
         }, {
             test: /\.scss$/,
             loader: ExtractTextPlugin.extract(
-                {notExtractLoader: 'style', loader: 'css!sass'}),
+                {notExtractLoader: 'style-loader', loader: 'css-loader!sass-loader'}),
             exclude: /node_modules/
         }, {
             test: /\.(png|jpg)$/,
