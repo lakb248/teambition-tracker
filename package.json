@@ -17,6 +17,7 @@
   },
   "homepage": "https://gitlab.com/lakb248/teambition-tracker#README",
   "dependencies": {
+    "axios": "^0.15.3",
     "firebase": "^3.6.4",
     "vue": "^2.1.8",
     "vue-resource": "^1.0.3",
