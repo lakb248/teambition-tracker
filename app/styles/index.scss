@@ -1,0 +1,47 @@
+@import "./theme.scss";
+* {
+    padding: 0px;
+    margin: 0px;
+    box-sizing: border-box;
+}
+html {
+    height: 100%;
+}
+body {
+    width: 100%;
+    height: 100%;
+    font-family: monospace, sans-serif, serif;
+}
+.wrap {
+    width: 100%;
+    height: 100%;
+}
+$nav-width: 60px;
+$header-height: 50px;
+.nav {
+    float: left;
+    width: $nav-width;
+    height: 100%;
+    background: $primary-color;
+}
+.container {
+    position: absolute;
+    left: $nav-width;
+    top: 0;
+    right: 0;
+    bottom: 0;
+}
+.header {
+    width: 100%;
+    height: $header-height;
+    background: $white;
+    box-shadow: rgba(0, 0, 0, 0.258824) 0px 2px 5px;;
+}
+.content {
+    position: absolute;
+    top: $header-height;
+    left: 0;
+    bottom: 0;
+    right: 0px;
+    overflow: scroll;
+}
