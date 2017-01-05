@@ -4,7 +4,8 @@
   "description": "A time tracker for teambition",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "webpack-dev-server --watch --progress --config webpack.dev.config.js --port 8080",
+    "build": "webpack --color --progress --config webpack.prod.config.js"
   },
   "repository": {
     "type": "git",
