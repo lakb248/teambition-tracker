@@ -2,7 +2,7 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 import http from 'axios';
-import {getToken, checkToken} from './utils/authorize.js';
+import {getToken, checkToken, refreshToken} from './utils/authorize.js';
 import config from './utils/config.js';
 import Project from './models/project.js';
 
@@ -21,7 +21,7 @@ let App = new Vue({
         var token = getToken();
         console.log(token);
         if (token === '') {
-            // TODO: refresh token
+            refreshToken();
         } else {
             checkToken(token)
                 .then((success: boolean) => {
@@ -38,7 +38,7 @@ let App = new Vue({
                                 console.log(res);
                             });
                     } else {
-                        // TODO: refresh token
+                        refreshToken();
                     }
                 });
         }
