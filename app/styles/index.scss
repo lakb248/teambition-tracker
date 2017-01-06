@@ -23,6 +23,7 @@ $header-height: 50px;
     width: $nav-width;
     height: 100%;
     background: $primary-color;
+    box-shadow: rgba(0, 0, 0, 0.258824) 0px 0px 5px;
 }
 .container {
     position: absolute;
@@ -35,13 +36,14 @@ $header-height: 50px;
     width: 100%;
     height: $header-height;
     background: $white;
-    box-shadow: rgba(0, 0, 0, 0.258824) 0px 2px 5px;;
+    box-shadow: rgba(0, 0, 0, 0.258824) 0px 0px 5px;
 }
 .content {
     position: absolute;
-    top: $header-height;
+    top: $header-height + 2;
     left: 0;
     bottom: 0;
     right: 0px;
+    padding: 10px;
     overflow: scroll;
 }
