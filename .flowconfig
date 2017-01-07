@@ -6,5 +6,8 @@
 [libs]
 
 [options]
-module.file_ext=.js
-module.file_ext=.scss
+module.name_mapper.extension='scss' -> '<PROJECT_ROOT>/flow/GeneralStub'
+module.name_mapper='vue' -> '<PROJECT_ROOT>/flow/GeneralStub'
+module.name_mapper='vue-router' -> '<PROJECT_ROOT>/flow/GeneralStub'
+module.name_mapper='axios' -> '<PROJECT_ROOT>/flow/GeneralStub'
+module.name_mapper='js-cookie' -> '<PROJECT_ROOT>/flow/GeneralStub'
