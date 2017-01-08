@@ -1,7 +1,7 @@
 /* @flow */
 import cookie from 'js-cookie';
 import http from 'axios';
-import config from './config.js';
+import config from './config';
 const TOKEN_NAME = 'teambition-tracker-token';
 
 /**

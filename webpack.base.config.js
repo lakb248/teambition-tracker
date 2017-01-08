@@ -5,8 +5,6 @@ var path = require('path');
 var webpack = require('webpack');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
-var autoprefixer = require('autoprefixer');
-
 module.exports = {
     entry: {
         app: './app/index.js'
@@ -28,16 +26,19 @@ module.exports = {
         }, {
             test: /\.scss$/,
             loader: ExtractTextPlugin.extract(
-                {notExtractLoader: 'style-loader', loader: 'css-loader!sass-loader'}),
+                {
+                    notExtractLoader: 'style-loader',
+                    loader: 'css-loader!sass-loader'
+                }),
             exclude: /node_modules/
         }, {
-            test: /\.(png|jpg)$/,
+            test: /\.(png|woff|woff2|eot|ttf|svg)$/,
             loader: 'url-loader?limit=8192'
         }]
     },
     resolve: {
         alias: {
-            'vue': 'vue/dist/vue.js'
+            vue: 'vue/dist/vue.js'
         }
     },
     plugins: [
@@ -50,7 +51,7 @@ module.exports = {
         }),
         new webpack.optimize.CommonsChunkPlugin({
             name: 'common',
-            minChunks: function (module, count) {
+            minChunks: function(module, count) {
                 // any required modules inside node_modules are extracted to vendor
                 return (
                     module.resource &&
@@ -58,7 +59,7 @@ module.exports = {
                     module.resource.indexOf(
                         path.join(__dirname, 'node_modules')
                     ) === 0
-                )
+                );
             }
         })
     ]

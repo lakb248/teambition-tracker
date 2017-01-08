@@ -20,3 +20,6 @@ build/
 
 # code coverage directory #
 coverage/
+
+# flow-typed
+flow-typed/
