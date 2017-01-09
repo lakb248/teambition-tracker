@@ -2,7 +2,8 @@
   "extends": "eslint-config-google",
   "parser": "babel-eslint",
   "plugins": [
-    "flowtype"
+    "flowtype",
+    "html"
   ],
   "rules": {
     "indent": [2, 4],
@@ -12,6 +13,7 @@
     "no-eq-null": 0,
     "quote-props": [2, 'as-needed'],
     "no-warning-comments": 0,
+    "max-len": ["error", 120],
     "flowtype/boolean-style": [
       2,
       "boolean"
