@@ -3,7 +3,6 @@
  */
 var webpack = require('webpack');
 var config = require('./webpack.base.config');
-var path = require('path');
 
 config.output.filename = '[chunkhash].[name].js';
 config.plugins = (config.plugins || []).concat([
