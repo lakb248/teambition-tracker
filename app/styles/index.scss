@@ -17,7 +17,7 @@ body {
     width: 100%;
     height: 100%;
 }
-$nav-width: 60px;
+$nav-width: 50px;
 $header-height: 50px;
 .nav {
     float: left;
@@ -25,6 +25,23 @@ $header-height: 50px;
     height: 100%;
     background: $primary-color;
     box-shadow: rgba(0, 0, 0, 0.258824) 0px 0px 5px;
+}
+.nav-item {
+    width: 100%;
+    height: $nav-width;
+    cursor: pointer;
+    a {
+        display: block;
+        width: $nav-width;
+        height: $nav-width;
+        text-align: center;
+        line-height: $nav-width;
+        font-size: 18px;
+        color: $white;
+    }
+    &:hover {
+        background-color: $primary-color-hover;
+    }
 }
 .container {
     position: absolute;
@@ -38,6 +55,26 @@ $header-height: 50px;
     height: $header-height;
     background: $white;
     box-shadow: rgba(0, 0, 0, 0.258824) 0px 0px 5px;
+}
+$user-header-width: $header-height - 14;
+.user-header {
+    float: right;
+    width: $user-header-width;
+    height: $user-header-width;
+    margin-top: 7px;
+    margin-right: 20px;
+    border-radius: 50%;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+.header-logo {
+    float: left;
+    width: 200px;
+    height: $user-header-width;
+    margin-left: 20px;
+    margin-top: 7px;
+    border: 1px solid black;
 }
 .content {
     position: absolute;
