@@ -22,7 +22,7 @@ module.exports = {
             exclude: /node_modules/
         }, {
             test: /\.vue$/,
-            loader: 'vue'
+            loader: 'vue-loader'
         }, {
             test: /\.scss$/,
             loader: ExtractTextPlugin.extract(

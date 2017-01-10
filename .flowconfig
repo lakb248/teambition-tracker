@@ -7,6 +7,7 @@
 
 [options]
 module.name_mapper.extension='scss' -> '<PROJECT_ROOT>/flow/GeneralStub'
+module.name_mapper.extension='vue' -> '<PROJECT_ROOT>/flow/GeneralStub'
 module.name_mapper='vue' -> '<PROJECT_ROOT>/flow/GeneralStub'
 module.name_mapper='vue-router' -> '<PROJECT_ROOT>/flow/GeneralStub'
 module.name_mapper='axios' -> '<PROJECT_ROOT>/flow/GeneralStub'
