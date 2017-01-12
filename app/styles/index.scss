@@ -24,7 +24,7 @@ $header-height: 50px;
     width: $nav-width;
     height: 100%;
     background: $primary-color;
-    box-shadow: rgba(0, 0, 0, 0.258824) 0px 0px 5px;
+    box-shadow: $box-shadow;
 }
 .nav-item {
     width: 100%;
@@ -54,7 +54,7 @@ $header-height: 50px;
     width: 100%;
     height: $header-height;
     background: $white;
-    box-shadow: rgba(0, 0, 0, 0.258824) 0px 0px 5px;
+    box-shadow: $box-shadow;
 }
 $user-header-width: $header-height - 14;
 .user-header {
@@ -84,4 +84,14 @@ $user-header-width: $header-height - 14;
     right: 0px;
     padding: 10px;
     overflow: scroll;
+}
+
+.loading {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    bottom: 0px;
+    right: 0px;
+    background-color: rgba(0,0,0,0.6);
+    z-index: 99;
 }
