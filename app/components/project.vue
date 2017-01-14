@@ -1,15 +1,12 @@
 <template>
-    <div class="project-card">
+    <div class="project-card" @click="onProjectClick(project._id)">
         <div class="project-logo" :style="{'background-image': 'url(' + project.logo + ')'}"></div>
         <div class="project-overview">
             <p class="project-overview--name">{{project.name}}</p>
             <p class="project-overview--createtime">{{project.created}}</p>
             <p class="project-overview--createtime">04:23 h</p>
-
         </div>
-        <div class="project-card--more">
-
-        </div>
+        <div class="project-card--more"></div>
     </div>
 </template>
 
@@ -18,13 +15,18 @@ export default {
     props: ['project'],
     data() {
         return {};
+    },
+    methods: {
+        onProjectClick(projectId: Number): void {
+            this.$emit('project-selected', projectId);
+        }
     }
 };
 </script>
 
 <style lang="sass">
     @import "../styles/theme.scss";
-    $project-logo-square: 63px;
+    $project-logo-square: 70px;
     .project-card {
         position: relative;
         height: $project-logo-square;
@@ -35,7 +37,7 @@ export default {
             right: 5px;
             bottom: 5px;
             width: 10px;
-            height: 20px;
+            height: 30px;
             border: 1px solid black;
         }
     }
@@ -55,13 +57,14 @@ export default {
             font-size: 14px;
             height: 20px;
             line-height: 20px;
-            margin-bottom: 3px;
+            margin-bottom: 6px;
         }
         &--createtime {
             font-size: 10px;
             height: 15px;
             line-height: 15px;
             color: $gray;
+            margin-bottom: 2px;
         }
     }
 </style>
