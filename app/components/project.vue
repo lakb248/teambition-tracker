@@ -32,6 +32,7 @@ export default {
         height: $project-logo-square;
         border-left: $project-logo-square solid transparent;
         box-shadow: $box-shadow;
+        cursor: pointer;
         &--more {
             position: absolute;
             right: 5px;
