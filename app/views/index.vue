@@ -104,7 +104,7 @@ export default {
         width: 65%;
     }
     .project-list {
-        margin-top: 30px;
+        margin-top: 15px;
         li {
             margin-bottom: 10px;
         }
@@ -114,7 +114,6 @@ export default {
         width: 100%;
         height: 30px;
         padding-left: 30px;
-        background-color: $dark-gray;
         i {
             position: absolute;
             top: 5px;
@@ -124,14 +123,16 @@ export default {
             text-align: center;
             line-height: 20px;
             font-size: 16px;
-            color: $basic-color;
         }
         input {
             width: 100%;
-            height: 30px;
-            line-height: 30px;
+            height: 28px;
+            line-height: 28px;
             padding-left: 10px;
             font-size: 14px;
+            &:focus {
+                border-bottom: 1px solid $light-gray;
+            }
         }
     }
 </style>
