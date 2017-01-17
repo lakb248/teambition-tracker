@@ -43,9 +43,11 @@ export default {
     computed: {
         filteredProject() {
             let key = this.projectSearchKey;
-            // TODO: 忽略大小写
+            let lowerCaseKey = key.toLowerCase();
+            let upperCaseKey = key.toUpperCase();
             return this.projects.filter(project => {
-                return project.name.indexOf(key) !== -1;
+                return project.name.indexOf(lowerCaseKey) !== -1 ||
+                    project.name.indexOf(upperCaseKey) !== -1;
             });
         }
     },
