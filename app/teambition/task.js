@@ -1,9 +1,11 @@
 import Model from './model';
-class User extends Model {
+
+class Task extends Model {
     me() {
         return this._http.request({
-            url: '/users/me'
+            url: '/v2/tasks/me'
         });
     }
 }
-export default User;
+
+export default Task;

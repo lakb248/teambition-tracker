@@ -22,11 +22,12 @@
 </template>
 
 <script>
-import Project from '../models/project';
-import Task from '../models/task';
-import modelUtil from '../models/model-utils';
+import Project from '../teambition/project';
+import Task from '../teambition/task';
+import User from '../teambition/user';
 import ProjectCard from '../components/project.vue';
 import TaskCard from '../components/task.vue';
+import Util from '../utils/util';
 
 export default {
     data() {
@@ -57,31 +58,27 @@ export default {
         }
     },
     mounted() {
-        /* global window */
-        let cache = window.localStorage;
-        if (cache.getItem('projects') && cache.getItem('tasks')) {
-            this.projects = JSON.parse(cache.getItem('projects')).data;
-            this.tasks = JSON.parse(cache.getItem('tasks')).data;
-        } else {
-            let project = new Project(this.request);
-            let allProjects = project.getProjects();
-            let task = new Task(this.request);
-            let allTasks = task.me();
-            this.axios.all([allProjects, allTasks])
-                .then(this.axios.spread(
-                    (
-                    projects: Object,
-                    tasks: Object
-                    ) => {
-                        cache.setItem('projects', JSON.stringify(projects));
-                        cache.setItem('tasks', JSON.stringify(tasks));
-                        projects = projects.data;
-                        this.projects = projects;
-                        tasks = tasks.data;
-                        this.tasks = tasks;
-                        console.log(modelUtil.groupByProjects(projects, tasks));
-                    }));
-        }
+        let project = new Project(this.request);
+        let allProjects = project.getProjects();
+        let task = new Task(this.request);
+        let allTasks = task.me();
+        let user = new User(this.request);
+        let members = user.member();
+        // assemble data
+        this.axios.all([allProjects, allTasks, members])
+            .then(this.axios.spread(
+                (
+                projects: Object,
+                tasks: Object,
+                members: Object
+                ): void => {
+                    projects = projects.data;
+                    this.projects = projects;
+                    tasks = tasks.data;
+                    this.tasks = tasks;
+                    members = members.data;
+                    members = Util.arrayToObject(members, '_id');
+                }));
     }
 };
 
