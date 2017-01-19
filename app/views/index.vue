@@ -22,12 +22,10 @@
 </template>
 
 <script>
-import Project from '../teambition/project';
-import Task from '../teambition/task';
-import User from '../teambition/user';
+import Project from '../models/project';
+import Task from '../models/task';
 import ProjectCard from '../components/project.vue';
 import TaskCard from '../components/task.vue';
-import Util from '../utils/util';
 
 export default {
     data() {
@@ -59,25 +57,18 @@ export default {
     },
     mounted() {
         let project = new Project(this.request);
-        let allProjects = project.getProjects();
-        let task = new Task(this.request);
-        let allTasks = task.me();
-        let user = new User(this.request);
-        let members = user.member();
+        let allProjects = project.all();
+        let task = new Task(this.request, this.axios);
+        let allTasks = task.all();
         // assemble data
-        this.axios.all([allProjects, allTasks, members])
+        this.axios.all([allProjects, allTasks])
             .then(this.axios.spread(
                 (
                 projects: Object,
-                tasks: Object,
-                members: Object
+                tasks: Object
                 ): void => {
-                    projects = projects.data;
                     this.projects = projects;
-                    tasks = tasks.data;
                     this.tasks = tasks;
-                    members = members.data;
-                    members = Util.arrayToObject(members, '_id');
                 }));
     }
 };

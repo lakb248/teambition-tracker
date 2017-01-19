@@ -13,26 +13,24 @@ class Task {
         let tbMembersReq = this._tbUser.members();
         return this._axios.all([tbTaskReq, tbMembersReq])
             .then(this._axios.spread((tbTaskRes, tbMemberRes) => {
-                let tbTask = tbTaskRes.data;
-                let tbMember = tbMemberRes.data;
-                tbMember = Util.arrayToObject(tbMember, '_id');
-                let taskList = [];
-                tbTask.forEach(task => {
+                let tbTasks = tbTaskRes.data;
+                let tbMembers = tbMemberRes.data;
+                tbMembers = Util.arrayToObject(tbMembers, '_id');
+                return tbTasks.map(task => {
                     let newTask = {};
                     newTask._id = task._id;
                     newTask.content = task.content;
                     newTask.subtasks = task.subtasks;
-                    // newTask.involveMembers = task.involveMembers;
+                    newTask.dueDate = task.dueDate;
                     newTask.created = task.created;
                     newTask.subtaskCount = task.subtaskCount;
                     let involveMembers = task.involveMembers;
                     newTask.involveMembers = [];
                     involveMembers.forEach(memberId => {
-                        newTask.involveMembers.push(tbMember[memberId]);
+                        newTask.involveMembers.push(tbMembers[memberId]);
                     });
-                    taskList.push(newTask);
+                    return newTask;
                 });
-                return taskList;
             }));
     }
 }
