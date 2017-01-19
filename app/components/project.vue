@@ -1,5 +1,5 @@
 <template>
-    <div class="project-card" @click="onProjectClick(project._id)">
+    <div class="project-card card" @click="onProjectClick(project._id)">
         <div class="project-logo" :style="{'background-image': 'url(' + project.logo + ')'}"></div>
         <div class="project-overview">
             <p class="project-overview--name">{{project.name}}</p>
@@ -30,8 +30,6 @@ export default {
     .project-card {
         position: relative;
         height: $project-logo-square;
-        border-left: $project-logo-square solid transparent;
-        box-shadow: $box-shadow;
         cursor: pointer;
         &--more {
             position: absolute;
@@ -47,12 +45,16 @@ export default {
         float: left;
         width: $project-logo-square;
         height: $project-logo-square;
-        margin-left: -$project-logo-square;
         background-size: cover;
         background-repeat: no-repeat;
         background-position: center;
     }
     .project-overview {
+        position: absolute;
+        left: $project-logo-square;
+        top: 0px;
+        bottom: 0px;
+        right: 0px;
         padding: 5px 10px;
         &--name {
             font-size: 14px;

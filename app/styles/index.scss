@@ -1,26 +1,7 @@
 @import "./theme.scss";
 @import "./glyphicons.scss";
-* {
-    padding: 0px;
-    margin: 0px;
-    box-sizing: border-box;
-}
-html {
-    height: 100%;
-}
-body {
-    width: 100%;
-    height: 100%;
-    font-family: "Hiragino Sans GB", tahoma, arial, sans-serif, serif;
-    color: $black;
-}
-ul {
-    list-style: none;
-}
-input[type="text"] {
-    border: none;
-    outline: none;
-}
+@import "./common.scss";
+
 
 .wrap {
     width: 100%;
