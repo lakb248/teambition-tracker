@@ -5,7 +5,7 @@ class User extends Model {
             url: '/users/me'
         });
     }
-    member() {
+    members() {
         return this._http.request({
             url: '/members/me'
         });
