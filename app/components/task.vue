@@ -8,6 +8,10 @@
                 :style="{'background-image': 'url(' + member.avatarUrl + ')'}"
             ></span>
         </div>
+        <div class="task-card--subtasks" v-show="task.subtaskCount.total > 0">
+            <i class="fui-list-bulleted"></i>
+            {{task.subtaskCount.done}}/{{task.subtaskCount.total}}
+        </div>
     </div>
 </template>
 
@@ -31,6 +35,16 @@ export default {
         }
         &--member {
             float: right;
+        }
+        &--subtasks {
+            float: left;
+            width: 100%;
+            font-size: 10px;
+            i {
+                display: inline-block;
+                width: 10px;
+                height: 10px;
+            }
         }
     }
     .member-avatar {
