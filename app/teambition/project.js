@@ -1,9 +1,9 @@
 import Model from './model';
-class Project extends Model {
+class TBProject extends Model {
     getProjects() {
         return this._http.request({
             url: '/projects'
         });
     }
 }
-export default Project;
+export default TBProject;

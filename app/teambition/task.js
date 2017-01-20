@@ -1,6 +1,6 @@
 import Model from './model';
 
-class Task extends Model {
+class TBTask extends Model {
     me() {
         return this._http.request({
             url: '/v2/tasks/me'
@@ -8,4 +8,4 @@ class Task extends Model {
     }
 }
 
-export default Task;
+export default TBTask;

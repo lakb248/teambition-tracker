@@ -4,7 +4,7 @@ import Router from 'vue-router';
 import VueAxios from './utils/vue-axios';
 import {getToken, checkToken, refreshToken} from './utils/authorize';
 import config from './utils/config';
-import User from './teambition/user';
+import TBUser from './teambition/user';
 
 import Index from './views/index.vue';
 
@@ -48,7 +48,7 @@ if (token === '') {
                     token: token
                 });
                 App.$mount('.wrap');
-                let user = new User(App.request);
+                let user = new TBUser(App.request);
                 user.me()
                     .then((res: Object) => {
                         App.me = res.data;
