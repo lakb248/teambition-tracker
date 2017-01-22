@@ -8,7 +8,13 @@ class User {
         return this._tbUser.me()
             .then(res => {
                 let me = res.data;
-                return me;
+                return {
+                    _id: me._id,
+                    name: me.name,
+                    avatarUrl: me.avatarUrl,
+                    snapperToken: me.snapperToken,
+                    strikerAuth: me.strikerAuth
+                };
             });
     }
     members() {
