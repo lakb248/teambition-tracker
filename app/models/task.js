@@ -1,4 +1,5 @@
 import TBTask from '../teambition/task';
+import TBSubTask from '../teambition/subtask';
 import TBUser from '../teambition/user';
 import Util from '../utils/util';
 import fecha from 'fecha';
@@ -11,28 +12,45 @@ class Task {
     constructor(request, axios) {
         this._tbTask = new TBTask(request);
         this._tbUser = new TBUser(request);
+        this._tbSubTask = new TBSubTask(request);
         this._axios = axios;
     }
     all() {
         let tbTaskReq = this._tbTask.me();
+        let tbSubTaskReq = this._tbSubTask.me();
         let tbMembersReq = this._tbUser.members();
-        return this._axios.all([tbTaskReq, tbMembersReq])
-            .then(this._axios.spread((tbTaskRes, tbMemberRes) => {
+        return this._axios.all([tbTaskReq, tbMembersReq, tbSubTaskReq])
+            .then(this._axios.spread((tbTaskRes, tbMemberRes, tbSubTaskRes) => {
                 let tbTasks = tbTaskRes.data;
                 let tbMembers = tbMemberRes.data;
+                let tbSubTask = tbSubTaskRes.data;
                 tbMembers = Util.arrayToObject(tbMembers, '_id');
+                tbSubTask = Util.arrayToObject(tbSubTask, '_taskId');
                 return tbTasks.map(task => {
                     let involveMembers = [];
                     task.involveMembers.forEach(memberId => {
                         involveMembers.push(tbMembers[memberId]);
                     });
+                    let subtasks = tbSubTask[task._id];
+                    let subtaskCount = {
+                        done: 0,
+                        total: 0
+                    };
+                    if (subtasks) {
+                        subtasks.forEach(subtask => {
+                            subtaskCount.total ++;
+                            if (subtask.isDone) {
+                                subtaskCount.done ++;
+                            }
+                        });
+                    }
                     return {
                         _id: task._id,
                         content: task.content,
-                        subtasks: task.subtasks,
+                        subtasks: subtasks,
                         dueDate: this._dueDateBeautify(task.dueDate),
                         created: task.created,
-                        subtaskCount: task.subtaskCount,
+                        subtaskCount: subtaskCount,
                         priority: task.priority,
                         involveMembers: involveMembers
                     };
