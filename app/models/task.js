@@ -24,13 +24,16 @@ class Task {
                 let tbTasks = tbTaskRes.data;
                 let tbMembers = tbMemberRes.data;
                 let tbSubTask = tbSubTaskRes.data;
+                // switch tbMembers and tbSubTask to Map by key
                 tbMembers = Util.arrayToObject(tbMembers, '_id');
                 tbSubTask = Util.arrayToObject(tbSubTask, '_taskId');
                 return tbTasks.map(task => {
+                    // get involveMembers
                     let involveMembers = [];
                     task.involveMembers.forEach(memberId => {
                         involveMembers.push(tbMembers[memberId]);
                     });
+                    // get subtasks and subtaskCount
                     let subtasks = tbSubTask[task._id];
                     let subtaskCount = {
                         done: 0,
@@ -44,6 +47,7 @@ class Task {
                             }
                         });
                     }
+                    // generate task
                     return {
                         _id: task._id,
                         content: task.content,
@@ -64,6 +68,7 @@ class Task {
                 type: ''
             };
         }
+
         dueDate = new Date(dueDate);
         let now = new Date();
         let nowTimestamps = now.getTime();
@@ -73,10 +78,13 @@ class Task {
         let delta = dueDateTimestamps - nowTimestamps;
 
         if (delta < 0) {
+            // has past
             type = 'danger';
         } else if (delta < MILLISECONDS_PER_DAY) {
+            // at the dueDate
             type = 'warning';
         } else if (delta < MILLISECONDS_PER_WEEK) {
+            // in one week
             type = 'normal';
         }
         return {
