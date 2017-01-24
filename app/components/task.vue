@@ -1,33 +1,24 @@
 <template>
-    <div>
-        <div class="task-card card"
-            :class="{
-                'task-card__normal': task.priority === 0,
-                'task-card__priority1': task.priority === 1,
-                'task-card__priority2': task.priority === 2
-            }">
-            <div class="task-card--line">
-                <div class="task-card--content">
-                    {{task.content}}
-                </div>
-                <div class="task-card--member">
-                    <span class="member-avatar" :title="member.name" v-for="member in task.involveMembers"
-                        :style="{'background-image': 'url(' + member.avatarUrl + ')'}"
-                    ></span>
-                </div>
+    <div class="task-card card"
+        :class="{
+            'task-card__normal': task.priority === 0,
+            'task-card__priority1': task.priority === 1,
+            'task-card__priority2': task.priority === 2
+        }">
+        <div class="task-card--line">
+            <div class="task-card--content">
+                {{task.content}}
             </div>
-            <div class="task-card--line" v-if="task.subtaskCount.total > 0">
-                <div class="task-card--subtasks" @click="toggleSubTask()">
-                    <i class="fui-list-bulleted"></i>
-                    {{task.subtaskCount.done}}/{{task.subtaskCount.total}}
-                </div>
+            <div class="task-card--member">
+                <span class="member-avatar" :title="member.name" v-for="member in task.involveMembers"
+                    :style="{'background-image': 'url(' + member.avatarUrl + ')'}"
+                ></span>
             </div>
-            <div class="task-card--line" v-if="task.dueDate.label !== ''">
-                <div class="task-card--dueDate" :class="{
-                    'task-card--dueDate__normal': task.dueDate.type === 'normal',
-                    'task-card--dueDate__warning': task.dueDate.type === 'warning',
-                    'task-card--dueDate__danger': task.dueDate.type === 'danger'
-                    }">{{task.dueDate.label}} 截止</div>
+        </div>
+        <div class="task-card--line" v-if="task.subtaskCount.total > 0">
+            <div class="task-card--subtasks" @click="toggleSubTask()">
+                <i class="fui-list-bulleted"></i>
+                {{task.subtaskCount.done}}/{{task.subtaskCount.total}}
             </div>
         </div>
         <div class="subtask-panel" v-show="!!task.subtasks && isSubtaskShow">
@@ -38,6 +29,13 @@
                     </div>
                 </li>
             </ul>
+        </div>
+        <div class="task-card--line" v-if="task.dueDate.label !== ''">
+            <div class="task-card--dueDate" :class="{
+                'task-card--dueDate__normal': task.dueDate.type === 'normal',
+                'task-card--dueDate__warning': task.dueDate.type === 'warning',
+                'task-card--dueDate__danger': task.dueDate.type === 'danger'
+                }">{{task.dueDate.label}} 截止</div>
         </div>
     </div>
 </template>
@@ -94,7 +92,6 @@ export default {
         }
         &--subtasks {
             float: left;
-            width: 100%;
             font-size: 10px;
             cursor: pointer;
             i {
@@ -135,11 +132,17 @@ export default {
         margin-left: 5px;
     }
     .subtask-panel {
-        background-color: $light-gray;
         font-size: 12px;
-        margin-top: 2px;
-        padding: 10px;
         border-radius: 2px;
+        padding: 10px;
+        transition: all .4s ease-in;
         overflow: hidden;
+        ul {
+            list-style-type: initial;
+            padding-left: 20px;
+        }
+        li {
+            margin: 5px 0px;
+        }
     }
 </style>

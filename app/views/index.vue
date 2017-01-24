@@ -118,9 +118,7 @@ export default {
             line-height: 28px;
             padding-left: 10px;
             font-size: 14px;
-            &:focus {
-                border-bottom: 1px solid $light-gray;
-            }
+            background-color: $light-gray;
         }
     }
 </style>
