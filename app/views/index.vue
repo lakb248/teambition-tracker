@@ -14,7 +14,7 @@
         <div class="task-panel">
             <ul>
                 <li v-for="task in tasks" style="margin-bottom: 10px;">
-                    <task :task="task"></task>
+                    <task :task="task" @status-change="onTaskStatusChange"></task>
                 </li>
             </ul>
         </div>
@@ -26,6 +26,8 @@ import Project from '../models/project';
 import Task from '../models/task';
 import ProjectCard from '../components/project.vue';
 import TaskCard from '../components/task.vue';
+import {TASK_STATUS} from '../utils/const.js';
+import {getObjectByKeyValue} from '../utils/util';
 
 export default {
     data() {
@@ -53,6 +55,12 @@ export default {
     methods: {
         onProjectSelected(projectId) {
             console.log(projectId);
+        },
+        onTaskStatusChange(event) {
+            console.log(event.id, event.status);
+            let task = getObjectByKeyValue(this.tasks, '_id', event.id);
+            task.status = event.status;
+            if (event.status === TASK_STATUS.PLAYING) {}
         }
     },
     mounted() {

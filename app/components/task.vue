@@ -1,11 +1,13 @@
 <template>
     <div class="task-card card"
-        :class="{
-            'task-card__normal': task.priority === 0,
-            'task-card__priority1': task.priority === 1,
-            'task-card__priority2': task.priority === 2
-        }">
+        :class="[priorityClass]">
         <div class="task-card--line">
+            <div class="task-card--setup" :class="{
+                        'fui-play': !isPlay,
+                        'fui-pause': isPlay
+                    }"
+                @click="toggleTaskStatus()"
+                    ></div>
             <div class="task-card--content">
                 {{task.content}}
             </div>
@@ -31,16 +33,13 @@
             </ul>
         </div>
         <div class="task-card--line" v-if="task.dueDate.label !== ''">
-            <div class="task-card--dueDate" :class="{
-                'task-card--dueDate__normal': task.dueDate.type === 'normal',
-                'task-card--dueDate__warning': task.dueDate.type === 'warning',
-                'task-card--dueDate__danger': task.dueDate.type === 'danger'
-                }">{{task.dueDate.label}} 截止</div>
+            <div class="task-card--dueDate" :class="[dueDateClass]">{{task.dueDate.label}} 截止</div>
         </div>
     </div>
 </template>
 
 <script>
+import {TASK_STATUS as STATUS} from '../utils/const.js';
 export default {
     props: ['task'],
     data() {
@@ -48,9 +47,29 @@ export default {
             isSubtaskShow: false
         };
     },
+    computed: {
+        isPlay() {
+            return this.task.status === STATUS.PLAYING;
+        },
+        priorityClass() {
+            return 'task-card__priority' + this.task.priority;
+        },
+        dueDateClass() {
+            return'task-card--dueDate__' + this.task.dueDate.type;
+        }
+    },
     methods: {
         toggleSubTask() {
             this.isSubtaskShow = !this.isSubtaskShow;
+        },
+        toggleTaskStatus() {
+            let newStatus = this.task.status === STATUS.PLAYING ?
+                STATUS.PAUSE : STATUS.PLAYING;
+            this.$emit('status-change', {
+                id: this.task._id,
+                task: this.task,
+                status: newStatus
+            });
         }
     }
 };
@@ -64,7 +83,7 @@ export default {
         border-left-style: solid;
         overflow: hidden;
 
-        &__normal {
+        &__priority0 {
             border-left-color: transparent;
         }
         &__priority1 {
@@ -81,6 +100,16 @@ export default {
             &:first-of-type {
                 margin-top: 0px;
             }
+        }
+        &--setup {
+            float: left;
+            width: 20px;
+            height: 20px;
+            line-height: 20px;
+            text-align: center;
+            margin-right: 10px;
+            font-size: 10px;
+            cursor: pointer;
         }
         &--content {
             float: left;
@@ -135,7 +164,6 @@ export default {
         font-size: 12px;
         border-radius: 2px;
         padding: 10px;
-        transition: all .4s ease-in;
         overflow: hidden;
         ul {
             list-style-type: initial;
