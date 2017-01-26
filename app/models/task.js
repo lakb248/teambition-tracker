@@ -68,11 +68,13 @@ class Task {
                         subtaskCount: subtaskCount,
                         priority: task.priority,
                         involveMembers: involveMembers,
-                        status: avTask ? avTask.status : STATUS.PAUSE
+                        status: avTask ? avTask.status : STATUS.PAUSE,
+                        lastStartTime: avTask ? avTask.lastStartTime : new Date()
                     };
                 });
             }));
     }
+    update(task) {}
     _dueDateBeautify(dueDate) {
         if (dueDate == null) {
             return {
