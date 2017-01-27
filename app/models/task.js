@@ -61,6 +61,7 @@ class Task {
                     // generate task
                     return {
                         _id: task._id,
+                        leancloudId: avTask ? avTask.id : undefined,
                         content: task.content,
                         subtasks: subtasks,
                         dueDate: this._dueDateBeautify(task.dueDate),
@@ -74,7 +75,12 @@ class Task {
                 });
             }));
     }
-    update(task) {}
+    save(task) {
+        if (task.leancloudId) {
+            return this._avTask.update(task);
+        }
+        return this._avTask.create(task);
+    }
     _dueDateBeautify(dueDate) {
         if (dueDate == null) {
             return {
