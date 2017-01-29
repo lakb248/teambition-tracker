@@ -6,7 +6,7 @@ class Logger {
         for (let key in console) {
             if (typeof console[key] === 'function') {
                 this[key] = (...args) => {
-                    console[key].apply(console[key], [this.prefix].concat(args));
+                    console[key].apply(console[key], ['[' + key.toUpperCase() + ']', this.prefix].concat(args));
                 };
             }
         }
