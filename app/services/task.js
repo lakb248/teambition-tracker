@@ -1,10 +1,10 @@
 import TBTask from '../teambition/task';
 import TBSubTask from '../teambition/subtask';
 import TBUser from '../teambition/user';
-
+import AV from '../leancloud/leancloud';
 import AVTask from '../leancloud/task';
 
-import {arrayToObject} from '../utils/util';
+import {arrayToObject, setAvObjectByPlainObject} from '../utils/util';
 import fecha from 'fecha';
 
 import {TASK_STATUS as STATUS, MILLISECONDS, DUEDATE_TYPE} from '../utils/const.js';
@@ -15,7 +15,7 @@ class Task {
         this._tbUser = new TBUser(request);
         this._tbSubTask = new TBSubTask(request);
 
-        this._avTask = new AVTask();
+        this._query = new AV.Query('AVTask');
         this._axios = axios;
     }
     all() {
@@ -23,7 +23,7 @@ class Task {
         let tbSubTaskReq = this._tbSubTask.me();
         let tbMembersReq = this._tbUser.members();
 
-        let avTaskReq = this._avTask.all();
+        let avTaskReq = this._allAVTask();
 
         return this._axios.all([tbTaskReq, tbMembersReq, tbSubTaskReq, avTaskReq])
             .then(this._axios.spread((tbTaskRes, tbMemberRes, tbSubTaskRes, avTaskRes) => {
@@ -61,7 +61,7 @@ class Task {
                     // generate task
                     return {
                         _id: task._id,
-                        leancloudId: avTask ? avTask.id : undefined,
+                        objectId: avTask ? avTask.id : undefined,
                         content: task.content,
                         subtasks: subtasks,
                         dueDate: this._dueDateBeautify(task.dueDate),
@@ -77,10 +77,38 @@ class Task {
             }));
     }
     save(task) {
-        if (task.leancloudId) {
-            return this._avTask.update(task);
+        if (task.objectId) {
+            let newTask = AV.Object.createWithoutData('AVTask', task.objectId);
+            setAvObjectByPlainObject(newTask, {
+                status: task.status,
+                lastStartTime: task.lastStartTime
+            });
+            return newTask.save();
         }
-        return this._avTask.create(task);
+        let newTask = new AVTask();
+        setAvObjectByPlainObject(newTask, {
+            taskId: task._id,
+            status: task.status,
+            lastStartTime: task.lastStartTime
+        });
+        return newTask.save();
+    }
+    _allAVTask() {
+        return this._query.find()
+            .then(res => {
+                if (res.length !== 0) {
+                    res = res.map(task => {
+                        let newTask = {};
+                        newTask.id = task.id;
+                        newTask.status = task.attributes.status;
+                        newTask.taskId = task.attributes.taskId;
+                        newTask.lastStartTime = task.attributes.lastStartTime;
+                        return newTask;
+                    });
+                    return res;
+                }
+                return res;
+            });
     }
     _dueDateBeautify(dueDate) {
         if (dueDate == null) {

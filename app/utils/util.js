@@ -47,8 +47,16 @@ let getObjectByKeyValue = (list, key, value, first = true) => {
     }
     return result;
 };
+let setAvObjectByPlainObject = (avObject, plainObject) => {
+    for (let key in plainObject) {
+        if (plainObject.hasOwnProperty(key) && key !== 'objectId') {
+            avObject.set(key, plainObject[key]);
+        }
+    }
+};
 export {
     isArray,
     arrayToObject,
-    getObjectByKeyValue
+    getObjectByKeyValue,
+    setAvObjectByPlainObject
 };
