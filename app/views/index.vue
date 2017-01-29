@@ -22,12 +22,20 @@
 </template>
 
 <script>
-import Project from '../models/project';
-import Task from '../models/task';
+import ProjectService from '../services/project';
+import ActivityService from '../services/activity';
+import TaskService from '../services/task';
 import ProjectCard from '../components/project.vue';
 import TaskCard from '../components/task.vue';
 import {TASK_STATUS} from '../utils/const.js';
 import {getObjectByKeyValue} from '../utils/util';
+import Logger from '../utils/logger';
+
+let projectService = null;
+let taskService = null;
+let activityService = null;
+let taskTimer = -1;
+let logger = new Logger('[index.vue]');
 
 export default {
     data() {
@@ -57,17 +65,44 @@ export default {
             console.log(projectId);
         },
         onTaskStatusChange(event) {
-            console.log(event.id, event.status);
+            logger.log('onTaskStatusChange', event.id, event.status);
             let task = getObjectByKeyValue(this.tasks, '_id', event.id);
             task.status = event.status;
-            if (event.status === TASK_STATUS.PLAYING) {}
+            if (event.status === TASK_STATUS.PLAYING) {
+                logger.log('start task');
+                // mark startTime and start a timer
+                var now = new Date().getTime();
+                task.lastStartTime = now;
+                taskService.save(task)
+                    .then(res => {
+                        logger.log('update task', res);
+                    });
+            } else {
+                logger.log('pause task');
+                // create a new activivty and stop the timer
+                taskService.save(task)
+                    .then(res => {
+                        logger.log('update task', res);
+                        clearInterval(taskTimer);
+                    });
+                let activity = {};
+                activity.start = task.lastStartTime;
+                activity.end = new Date().getTime();
+                activity.taskId = task._id;
+                activityService.save(activity)
+                    .then(res => {
+                        logger.log('create activity', res);
+                    });
+            }
         }
     },
     mounted() {
-        let project = new Project(this.request);
-        let allProjects = project.all();
-        let task = new Task(this.request, this.axios);
-        let allTasks = task.all();
+        projectService = new ProjectService(this.request);
+        taskService = new TaskService(this.request, this.axios);
+        activityService = new ActivityService();
+        let allProjects = projectService.all();
+        let allTasks = taskService.all();
+
         // assemble data
         this.axios.all([allProjects, allTasks])
             .then(this.axios.spread(

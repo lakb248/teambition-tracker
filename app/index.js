@@ -4,7 +4,7 @@ import Router from 'vue-router';
 import VueAxios from './utils/vue-axios';
 import {getToken, checkToken, refreshToken} from './utils/authorize';
 import config from './utils/config';
-import User from './models/user';
+import User from './services/user';
 
 import Index from './views/index.vue';
 

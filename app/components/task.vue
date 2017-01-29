@@ -55,7 +55,7 @@ export default {
             return 'task-card__priority' + this.task.priority;
         },
         dueDateClass() {
-            return'task-card--dueDate__' + this.task.dueDate.type;
+            return 'task-card--dueDate__' + this.task.dueDate.type;
         }
     },
     methods: {
@@ -67,7 +67,6 @@ export default {
                 STATUS.PAUSE : STATUS.PLAYING;
             this.$emit('status-change', {
                 id: this.task._id,
-                task: this.task,
                 status: newStatus
             });
         }
