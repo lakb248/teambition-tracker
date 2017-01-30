@@ -5,11 +5,14 @@ import AV from '../leancloud/leancloud';
 import AVTask from '../leancloud/task';
 import EventEmitter from './event';
 
-import {arrayToObject, setAvObjectByPlainObject} from '../utils/util';
+import {arrayToObject, setAvObjectByPlainObject, getObjectByKeyValue} from '../utils/util';
 import fecha from 'fecha';
+import Logger from '../utils/logger';
 import Cache from './cache';
 
 import {TASK_STATUS as STATUS, MILLISECONDS, DUEDATE_TYPE} from '../utils/const.js';
+
+let logger = new Logger('[service/task]');
 
 class Task extends EventEmitter {
     constructor(request, axios) {
@@ -23,7 +26,7 @@ class Task extends EventEmitter {
     }
     all() {
         if (Cache.get('tasks')) {
-            return Cache.get('tasks');
+            return Promise.resolve(Cache.get('tasks'));
         }
         let tbTaskReq = this._tbTask.me();
         let tbSubTaskReq = this._tbSubTask.me();
@@ -84,21 +87,39 @@ class Task extends EventEmitter {
             }));
     }
     save(task) {
+        let result = null;
+        // update task in leancloud
         if (task.objectId) {
+            logger.log('update task in leancloud');
             let newTask = AV.Object.createWithoutData('AVTask', task.objectId);
             setAvObjectByPlainObject(newTask, {
                 status: task.status,
                 lastStartTime: task.lastStartTime
             });
-            return newTask.save();
+            result = newTask.save();
+        } else {
+            // create new task in leancloud
+            logger.log('create task in leancloud');
+            let newTask = new AVTask();
+            setAvObjectByPlainObject(newTask, {
+                taskId: task._id,
+                status: task.status,
+                lastStartTime: task.lastStartTime
+            });
+            result = newTask.save();
         }
-        let newTask = new AVTask();
-        setAvObjectByPlainObject(newTask, {
-            taskId: task._id,
-            status: task.status,
-            lastStartTime: task.lastStartTime
+        return result.then(res => {
+            logger.log('task save succeed', task._id);
+            logger.log('update task in cache and trigger `all` event');
+            let tasks = Cache.get('tasks');
+            let updatedTask = getObjectByKeyValue(tasks, '_id', task._id);
+            updatedTask.objectId = res.id;
+            updatedTask.taskId = res.attributes.taskId;
+            updatedTask.lastStartTime = res.attributes.lastStartTime;
+            updatedTask.status = res.attributes.status;
+            this.emit('all', tasks);
+            return res;
         });
-        return newTask.save();
     }
     _allAVTask() {
         return this._query.find()

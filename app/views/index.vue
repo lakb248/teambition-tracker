@@ -100,6 +100,9 @@ export default {
         projectService = new ProjectService(this.request);
         taskService = new TaskService(this.request, this.axios);
         activityService = new ActivityService();
+        taskService.on('all', tasks => {
+            this.tasks = tasks;
+        });
         let allProjects = projectService.all();
         let allTasks = taskService.all();
 
