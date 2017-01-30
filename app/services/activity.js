@@ -2,11 +2,13 @@ import AVActivity from '../leancloud/activity';
 import Logger from '../utils/logger';
 import AV from '../leancloud/leancloud';
 import {setAvObjectByPlainObject} from '../utils/util';
+import EventEmitter from './event';
 
 let logger = new Logger('serviecs/activity');
 
-class Activity {
+class Activity extends EventEmitter {
     constructor() {
+        super();
         this._query = new AV.Query('AVActivity');
     }
     save(activity) {

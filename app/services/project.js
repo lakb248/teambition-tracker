@@ -1,7 +1,9 @@
 import TBProject from '../teambition/project';
 import fecha from 'fecha';
-class Project {
+import EventEmitter from './event';
+class Project extends EventEmitter {
     constructor(request) {
+        super();
         this._tbProject = new TBProject(request);
     }
     all() {

@@ -3,14 +3,17 @@ import TBSubTask from '../teambition/subtask';
 import TBUser from '../teambition/user';
 import AV from '../leancloud/leancloud';
 import AVTask from '../leancloud/task';
+import EventEmitter from './event';
 
 import {arrayToObject, setAvObjectByPlainObject} from '../utils/util';
 import fecha from 'fecha';
+import Cache from './cache';
 
 import {TASK_STATUS as STATUS, MILLISECONDS, DUEDATE_TYPE} from '../utils/const.js';
 
-class Task {
+class Task extends EventEmitter {
     constructor(request, axios) {
+        super();
         this._tbTask = new TBTask(request);
         this._tbUser = new TBUser(request);
         this._tbSubTask = new TBSubTask(request);
@@ -19,12 +22,14 @@ class Task {
         this._axios = axios;
     }
     all() {
+        if (Cache.get('tasks')) {
+            return Cache.get('tasks');
+        }
         let tbTaskReq = this._tbTask.me();
         let tbSubTaskReq = this._tbSubTask.me();
         let tbMembersReq = this._tbUser.members();
 
         let avTaskReq = this._allAVTask();
-
         return this._axios.all([tbTaskReq, tbMembersReq, tbSubTaskReq, avTaskReq])
             .then(this._axios.spread((tbTaskRes, tbMemberRes, tbSubTaskRes, avTaskRes) => {
                 let tbTasks = tbTaskRes.data;
@@ -36,7 +41,7 @@ class Task {
                 tbMembers = arrayToObject(tbMembers, '_id');
                 tbSubTask = arrayToObject(tbSubTask, '_taskId');
                 avTasks = arrayToObject(avTasks, 'taskId');
-                return tbTasks.map(task => {
+                let res = tbTasks.map(task => {
                     // get involveMembers
                     let involveMembers = [];
                     task.involveMembers.forEach(memberId => {
@@ -74,6 +79,8 @@ class Task {
                         lastStartTime: avTask ? avTask.lastStartTime : new Date()
                     };
                 });
+                Cache.set('tasks', res);
+                return res;
             }));
     }
     save(task) {
