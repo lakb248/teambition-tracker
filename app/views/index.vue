@@ -30,6 +30,7 @@ import TaskCard from '../components/task.vue';
 import {TASK_STATUS} from '../utils/const.js';
 import {getObjectByKeyValue} from '../utils/util';
 import Logger from '../utils/logger';
+import EventEmitter from '../services/event';
 
 let projectService = null;
 let taskService = null;
@@ -73,26 +74,20 @@ export default {
                 // mark startTime and start a timer
                 var now = new Date().getTime();
                 task.lastStartTime = now;
-                taskService.save(task)
-                    .then(res => {
-                        logger.log('update task', res);
-                    });
+                taskService.save(task);
             } else {
                 logger.log('pause task');
                 // create a new activivty and stop the timer
                 taskService.save(task)
                     .then(res => {
-                        logger.log('update task', res);
+                        logger.log('clear taskTimer', res);
                         clearInterval(taskTimer);
                     });
                 let activity = {};
                 activity.start = task.lastStartTime;
                 activity.end = new Date().getTime();
                 activity.taskId = task._id;
-                activityService.save(activity)
-                    .then(res => {
-                        logger.log('create activity', res);
-                    });
+                activityService.save(activity);
             }
         }
     },
@@ -100,7 +95,7 @@ export default {
         projectService = new ProjectService(this.request);
         taskService = new TaskService(this.request, this.axios);
         activityService = new ActivityService();
-        taskService.on('all', tasks => {
+        EventEmitter.on('all-task', tasks => {
             this.tasks = tasks;
         });
         let allProjects = projectService.all();

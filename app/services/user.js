@@ -1,9 +1,7 @@
 import TBUser from '../teambition/user';
-import EventEmitter from './event';
 
-class User extends EventEmitter {
+class User {
     constructor(request) {
-        super();
         this._tbUser = new TBUser(request);
     }
     me() {

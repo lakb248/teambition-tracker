@@ -3,6 +3,7 @@ import TBSubTask from '../teambition/subtask';
 import TBUser from '../teambition/user';
 import AV from '../leancloud/leancloud';
 import AVTask from '../leancloud/task';
+import ActivityService from './activity';
 import EventEmitter from './event';
 
 import {arrayToObject, setAvObjectByPlainObject, getObjectByKeyValue} from '../utils/util';
@@ -14,15 +15,17 @@ import {TASK_STATUS as STATUS, MILLISECONDS, DUEDATE_TYPE} from '../utils/const.
 
 let logger = new Logger('[service/task]');
 
-class Task extends EventEmitter {
+class Task {
     constructor(request, axios) {
-        super();
         this._tbTask = new TBTask(request);
         this._tbUser = new TBUser(request);
         this._tbSubTask = new TBSubTask(request);
 
         this._taskQuery = new AV.Query('AVTask');
-        this._activityQuery = new AV.Query('AVActivity');
+        this._activityService = new ActivityService();
+        EventEmitter.on('all-activity', activityList => {
+            this._onActivityChange(activityList);
+        });
         this._axios = axios;
     }
     all() {
@@ -34,7 +37,7 @@ class Task extends EventEmitter {
         let tbMembersReq = this._tbUser.members();
 
         let avTaskReq = this._allAVTask();
-        let avActivityReq = this._allAVActivity();
+        let avActivityReq = this._activityService.all();
 
         return this._axios.all([tbTaskReq, tbMembersReq, tbSubTaskReq, avTaskReq, avActivityReq])
             .then(this._axios.spread((tbTaskRes, tbMemberRes, tbSubTaskRes, avTaskRes, avActivityReq) => {
@@ -124,7 +127,7 @@ class Task extends EventEmitter {
             updatedTask.taskId = res.attributes.taskId;
             updatedTask.lastStartTime = res.attributes.lastStartTime;
             updatedTask.status = res.attributes.status;
-            this.emit('all', tasks);
+            EventEmitter.emit('all-task', tasks);
             return res;
         });
     }
@@ -145,23 +148,17 @@ class Task extends EventEmitter {
                 return res;
             });
     }
-    _allAVActivity() {
-        return this._activityQuery.find()
-            .then(res => {
-                if (res.length !== 0) {
-                    res = res.map(activity => {
-                        let newActivity = {};
-                        newActivity.id = activity.id;
-                        newActivity.start = activity.attributes.start;
-                        newActivity.end = activity.attributes.end;
-                        newActivity.location = activity.attributes.location;
-                        newActivity.taskId = activity.attributes.taskId;
-                        return newActivity;
-                    });
-                    return res;
-                }
-                return res;
-            });
+    _onActivityChange(activities) {
+        logger.log('listener of activity service');
+        activities = arrayToObject(activities, 'taskId', true);
+        let tasks = Cache.get('tasks');
+        tasks.forEach(task => {
+            let activityList = activities[task._id];
+            task.activity = activityList;
+            task.cost = this._formatMilliseconds(this._getCostFromActivity(activityList));
+        });
+        logger.log('activity updated and trigger `all` event');
+        EventEmitter.emit('all-task', tasks);
     }
     _getCostFromActivity(activity) {
         activity = activity || [];
