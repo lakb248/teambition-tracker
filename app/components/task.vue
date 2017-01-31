@@ -32,8 +32,9 @@
                 </li>
             </ul>
         </div>
-        <div class="task-card--line" v-if="task.dueDate.label !== ''">
-            <div class="task-card--dueDate" :class="[dueDateClass]">{{task.dueDate.label}} 截止</div>
+        <div class="task-card--line" v-if="task.dueDate.label !== '' || task.objectId">
+            <div class="task-card--dueDate" :class="[dueDateClass]" v-if="task.dueDate.label !== ''">{{task.dueDate.label}} 截止</div>
+            <div class="task-card--cost">{{task.cost}}</div>
         </div>
     </div>
 </template>
@@ -135,6 +136,7 @@ export default {
             border-radius: 2px;
             background-color: $light-gray;
             color: $gray;
+            margin-right: 5px;
             &__normal {
                 background-color: $primary-color;
                 color: $white;
@@ -147,6 +149,13 @@ export default {
                 background-color: $danger-color;
                 color: $white;
             }
+        }
+        &--cost {
+            float: left;
+            font-size: 10px;
+            padding: 0px 5px;
+            background-color: $light-gray;
+            border-radius: 2px;
         }
     }
     .member-avatar {

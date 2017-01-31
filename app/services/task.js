@@ -21,7 +21,8 @@ class Task extends EventEmitter {
         this._tbUser = new TBUser(request);
         this._tbSubTask = new TBSubTask(request);
 
-        this._query = new AV.Query('AVTask');
+        this._taskQuery = new AV.Query('AVTask');
+        this._activityQuery = new AV.Query('AVActivity');
         this._axios = axios;
     }
     all() {
@@ -33,17 +34,21 @@ class Task extends EventEmitter {
         let tbMembersReq = this._tbUser.members();
 
         let avTaskReq = this._allAVTask();
-        return this._axios.all([tbTaskReq, tbMembersReq, tbSubTaskReq, avTaskReq])
-            .then(this._axios.spread((tbTaskRes, tbMemberRes, tbSubTaskRes, avTaskRes) => {
+        let avActivityReq = this._allAVActivity();
+
+        return this._axios.all([tbTaskReq, tbMembersReq, tbSubTaskReq, avTaskReq, avActivityReq])
+            .then(this._axios.spread((tbTaskRes, tbMemberRes, tbSubTaskRes, avTaskRes, avActivityReq) => {
                 let tbTasks = tbTaskRes.data;
                 let tbMembers = tbMemberRes.data;
                 let tbSubTask = tbSubTaskRes.data;
 
                 let avTasks = avTaskRes;
+                let avActivities = avActivityReq;
                 // switch tbMembers and tbSubTask to Map by key
                 tbMembers = arrayToObject(tbMembers, '_id');
-                tbSubTask = arrayToObject(tbSubTask, '_taskId');
+                tbSubTask = arrayToObject(tbSubTask, '_taskId', true);
                 avTasks = arrayToObject(avTasks, 'taskId');
+                avActivities = arrayToObject(avActivities, 'taskId', true);
                 let res = tbTasks.map(task => {
                     // get involveMembers
                     let involveMembers = [];
@@ -64,6 +69,7 @@ class Task extends EventEmitter {
                             }
                         });
                     }
+                    let avActivity = avActivities[task._id];
                     // get task from leancloud
                     let avTask = avTasks[task._id];
                     // generate task
@@ -77,7 +83,8 @@ class Task extends EventEmitter {
                         subtaskCount: subtaskCount,
                         priority: task.priority,
                         involveMembers: involveMembers,
-                        cost: 0,
+                        activity: avActivity,
+                        cost: this._formatMilliseconds(this._getCostFromActivity(avActivity)),
                         status: avTask ? avTask.status : STATUS.PAUSE,
                         lastStartTime: avTask ? avTask.lastStartTime : new Date()
                     };
@@ -122,7 +129,7 @@ class Task extends EventEmitter {
         });
     }
     _allAVTask() {
-        return this._query.find()
+        return this._taskQuery.find()
             .then(res => {
                 if (res.length !== 0) {
                     res = res.map(task => {
@@ -137,6 +144,43 @@ class Task extends EventEmitter {
                 }
                 return res;
             });
+    }
+    _allAVActivity() {
+        return this._activityQuery.find()
+            .then(res => {
+                if (res.length !== 0) {
+                    res = res.map(activity => {
+                        let newActivity = {};
+                        newActivity.id = activity.id;
+                        newActivity.start = activity.attributes.start;
+                        newActivity.end = activity.attributes.end;
+                        newActivity.location = activity.attributes.location;
+                        newActivity.taskId = activity.attributes.taskId;
+                        return newActivity;
+                    });
+                    return res;
+                }
+                return res;
+            });
+    }
+    _getCostFromActivity(activity) {
+        activity = activity || [];
+        let cost = 0;
+        activity.forEach(activity => {
+            cost += activity.end - activity.start;
+        });
+        return cost;
+    }
+    _formatMilliseconds(milliseconds) {
+        let totalSeconds = Math.floor(milliseconds / 1000);
+        let seconds = totalSeconds % 60;
+        totalSeconds = Math.floor(totalSeconds / 60);
+        let minutes = totalSeconds % 60;
+        totalSeconds = Math.floor(totalSeconds / 60);
+        let hours = totalSeconds;
+        return (hours > 10 ? hours : ('0' + hours)) + ':' +
+            (minutes > 10 ? minutes : ('0' + minutes)) + ':' +
+            (seconds > 10 ? seconds : ('0' + seconds)) + 'h';
     }
     _dueDateBeautify(dueDate) {
         if (dueDate == null) {

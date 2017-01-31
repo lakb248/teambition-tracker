@@ -8,7 +8,7 @@ let isArray = obj => {
     }
     return false;
 };
-let arrayToObject = (array, key) => {
+let arrayToObject = (array, key, alwaysArray = false) => {
     array = array || [];
     let obj = {};
     array.forEach(item => {
@@ -24,6 +24,9 @@ let arrayToObject = (array, key) => {
                 obj[objKey].push(temp);
                 obj[objKey].push(item);
             }
+        } else if (alwaysArray) {
+            obj[objKey] = [];
+            obj[objKey].push(item);
         } else {
             obj[objKey] = item;
         }
