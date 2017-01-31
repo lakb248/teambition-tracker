@@ -33,12 +33,12 @@ class Activity {
                 let updatedActivity = getObjectByKeyValue(activityList, 'objectId', activity.objectId);
                 updatedActivity.start = res.attributes.start;
                 updatedActivity.end = res.attributes.end;
-                logger.log('update activity and trigger `all` event');
+                logger.log('update activity and trigger `all-activity` event');
                 EventEmitter.emit('all-activity', activityList);
             } else {
                 activity.objectId = res.id;
                 activityList.push(activity);
-                logger.log('add activity and trigger `all` event');
+                logger.log('add activity and trigger `all-activity` event');
                 EventEmitter.emit('all-activity', activityList);
             }
             return res;

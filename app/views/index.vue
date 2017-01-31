@@ -66,23 +66,20 @@ export default {
             console.log(projectId);
         },
         onTaskStatusChange(event) {
-            logger.log('onTaskStatusChange', event.id, event.status);
+            logger.log(`change task ${event.id} status to ${event.status}`);
             let task = getObjectByKeyValue(this.tasks, '_id', event.id);
             task.status = event.status;
             if (event.status === TASK_STATUS.PLAYING) {
-                logger.log('start task');
+                logger.log(`start task ${event.id}`);
                 // mark startTime and start a timer
                 var now = new Date().getTime();
                 task.lastStartTime = now;
                 taskService.save(task);
             } else {
-                logger.log('pause task');
+                logger.log(`pause task ${event.id} and clear task timer`);
+                clearInterval(taskTimer);
                 // create a new activivty and stop the timer
-                taskService.save(task)
-                    .then(res => {
-                        logger.log('clear taskTimer', res);
-                        clearInterval(taskTimer);
-                    });
+                taskService.save(task);
                 let activity = {};
                 activity.start = task.lastStartTime;
                 activity.end = new Date().getTime();

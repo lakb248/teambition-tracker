@@ -120,13 +120,13 @@ class Task {
         }
         return result.then(res => {
             logger.log('task save succeed', task._id);
-            logger.log('update task in cache and trigger `all` event');
             let tasks = Cache.get('tasks');
             let updatedTask = getObjectByKeyValue(tasks, '_id', task._id);
             updatedTask.objectId = res.id;
             updatedTask.taskId = res.attributes.taskId;
             updatedTask.lastStartTime = res.attributes.lastStartTime;
             updatedTask.status = res.attributes.status;
+            logger.log('update task in cache and trigger `all-task` event');
             EventEmitter.emit('all-task', tasks);
             return res;
         });
@@ -149,7 +149,6 @@ class Task {
             });
     }
     _onActivityChange(activities) {
-        logger.log('listener of activity service');
         activities = arrayToObject(activities, 'taskId', true);
         let tasks = Cache.get('tasks');
         tasks.forEach(task => {
@@ -157,7 +156,7 @@ class Task {
             task.activity = activityList;
             task.cost = this._formatMilliseconds(this._getCostFromActivity(activityList));
         });
-        logger.log('activity updated and trigger `all` event');
+        logger.log('activity updated and trigger `all-task` event');
         EventEmitter.emit('all-task', tasks);
     }
     _getCostFromActivity(activity) {
