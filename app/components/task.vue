@@ -17,15 +17,6 @@
                 ></span>
             </div>
         </div>
-        <div class="subtask-panel" v-show="!!task.subtasks && isSubtaskShow">
-            <ul>
-                <li v-for="subtask in task.subtasks">
-                    <div class="subtask">
-                        {{subtask.content}}
-                    </div>
-                </li>
-            </ul>
-        </div>
         <div class="task-card--line" v-if="task.dueDate.label !== '' || task.objectId">
             <div class="task-card--dueDate" :class="[dueDateClass]" v-if="task.dueDate.label !== ''">{{task.dueDate.label}} 截止</div>
             <div class="task-card--cost">{{task.cost}}</div>
@@ -35,6 +26,15 @@
                 <i class="fui-list-bulleted"></i>
                 {{task.subtaskCount.done}}/{{task.subtaskCount.total}}
             </div>
+        </div>
+        <div class="subtask-panel" v-show="!!task.subtasks && isSubtaskShow">
+            <ul>
+                <li v-for="subtask in task.subtasks">
+                    <div class="subtask">
+                        {{subtask.content}}
+                    </div>
+                </li>
+            </ul>
         </div>
         <div class="task-card--line">
             <div class="task-card--timer" v-show="isPlay">
@@ -109,6 +109,7 @@ export default {
             float: left;
             width: 100%;
             margin-top: 5px;
+            font-size: 10px;
             &:first-of-type {
                 margin-top: 0px;
             }
@@ -119,8 +120,7 @@ export default {
             height: 20px;
             line-height: 20px;
             text-align: center;
-            margin-right: 10px;
-            font-size: 10px;
+            margin-right: 5px;
             cursor: pointer;
         }
         &--content {
@@ -133,7 +133,6 @@ export default {
         }
         &--subtasks {
             float: left;
-            font-size: 10px;
             cursor: pointer;
             i {
                 display: inline-block;
@@ -143,7 +142,6 @@ export default {
         }
         &--dueDate {
             float: left;
-            font-size: 10px;
             padding: 0px 5px;
             border-radius: 2px;
             background-color: $light-gray;
@@ -164,7 +162,6 @@ export default {
         }
         &--cost {
             float: left;
-            font-size: 10px;
             padding: 0px 5px;
             background-color: $light-gray;
             border-radius: 2px;
