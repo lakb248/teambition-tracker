@@ -6,7 +6,7 @@ import AVTask from '../leancloud/task';
 import ActivityService from './activity';
 import EventEmitter from './event';
 
-import {arrayToObject, setAvObjectByPlainObject, getObjectByKeyValue} from '../utils/util';
+import {arrayToObject, setAvObjectByPlainObject, getObjectByKeyValue, millisecondsToObject} from '../utils/util';
 import fecha from 'fecha';
 import Logger from '../utils/logger';
 import Cache from './cache';
@@ -75,6 +75,12 @@ class Task {
                     let avActivity = avActivities[task._id];
                     // get task from leancloud
                     let avTask = avTasks[task._id];
+                    let status = avTask ? avTask.status : STATUS.PAUSE;
+                    let timer = 0;
+                    let lastStartTime = avTask ? avTask.lastStartTime : new Date();
+                    if (status === STATUS.PLAYING) {
+                        timer = new Date().getTime() - lastStartTime;
+                    }
                     // generate task
                     return {
                         _id: task._id,
@@ -88,8 +94,9 @@ class Task {
                         involveMembers: involveMembers,
                         activity: avActivity,
                         cost: this._formatMilliseconds(this._getCostFromActivity(avActivity)),
-                        status: avTask ? avTask.status : STATUS.PAUSE,
-                        lastStartTime: avTask ? avTask.lastStartTime : new Date()
+                        status: status,
+                        lastStartTime: lastStartTime,
+                        timer: timer
                     };
                 });
                 Cache.set('tasks', res);
@@ -168,15 +175,8 @@ class Task {
         return cost;
     }
     _formatMilliseconds(milliseconds) {
-        let totalSeconds = Math.floor(milliseconds / 1000);
-        let seconds = totalSeconds % 60;
-        totalSeconds = Math.floor(totalSeconds / 60);
-        let minutes = totalSeconds % 60;
-        totalSeconds = Math.floor(totalSeconds / 60);
-        let hours = totalSeconds;
-        return (hours > 10 ? hours : ('0' + hours)) + ':' +
-            (minutes > 10 ? minutes : ('0' + minutes)) + ':' +
-            (seconds > 10 ? seconds : ('0' + seconds)) + 'h';
+        let obj = millisecondsToObject(milliseconds);
+        return obj.hours + 'h ' + obj.minutes + 'm ' + obj.seconds + 's';
     }
     _dueDateBeautify(dueDate) {
         if (dueDate == null) {

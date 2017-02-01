@@ -63,7 +63,7 @@ export default {
     },
     methods: {
         onProjectSelected(projectId) {
-            console.log(projectId);
+            logger.log(`project ${projectId} selected`);
         },
         onTaskStatusChange(event) {
             logger.log(`change task ${event.id} status to ${event.status}`);
@@ -75,8 +75,13 @@ export default {
                 var now = new Date().getTime();
                 task.lastStartTime = now;
                 taskService.save(task);
+                task.timer = 0;
+                taskTimer = setInterval(() => {
+                    task.timer += 1000;
+                }, 1000);
             } else {
                 logger.log(`pause task ${event.id} and clear task timer`);
+                task.timer = 0;
                 clearInterval(taskTimer);
                 // create a new activivty and stop the timer
                 taskService.save(task);

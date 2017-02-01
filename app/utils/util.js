@@ -57,9 +57,23 @@ let setAvObjectByPlainObject = (avObject, plainObject) => {
         }
     }
 };
+let millisecondsToObject = milliseconds => {
+    let totalSeconds = Math.floor(milliseconds / 1000);
+    let seconds = totalSeconds % 60;
+    totalSeconds = Math.floor(totalSeconds / 60);
+    let minutes = totalSeconds % 60;
+    totalSeconds = Math.floor(totalSeconds / 60);
+    let hours = totalSeconds;
+    return {
+        hours: (hours >= 10 ? hours : ('0' + hours)),
+        minutes: (minutes >= 10 ? minutes : ('0' + minutes)),
+        seconds: (seconds >= 10 ? seconds : ('0' + seconds))
+    };
+};
 export {
     isArray,
     arrayToObject,
     getObjectByKeyValue,
-    setAvObjectByPlainObject
+    setAvObjectByPlainObject,
+    millisecondsToObject
 };

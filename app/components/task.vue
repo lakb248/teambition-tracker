@@ -2,12 +2,12 @@
     <div class="task-card card"
         :class="[priorityClass]">
         <div class="task-card--line">
-            <div class="task-card--setup" :class="{
+            <i class="task-card--setup" :class="{
                         'fui-play': !isPlay,
                         'fui-pause': isPlay
                     }"
                 @click="toggleTaskStatus()"
-                    ></div>
+                    ></i>
             <div class="task-card--content">
                 {{task.content}}
             </div>
@@ -15,12 +15,6 @@
                 <span class="member-avatar" :title="member.name" v-for="member in task.involveMembers"
                     :style="{'background-image': 'url(' + member.avatarUrl + ')'}"
                 ></span>
-            </div>
-        </div>
-        <div class="task-card--line" v-if="task.subtaskCount.total > 0">
-            <div class="task-card--subtasks" @click="toggleSubTask()">
-                <i class="fui-list-bulleted"></i>
-                {{task.subtaskCount.done}}/{{task.subtaskCount.total}}
             </div>
         </div>
         <div class="subtask-panel" v-show="!!task.subtasks && isSubtaskShow">
@@ -36,11 +30,25 @@
             <div class="task-card--dueDate" :class="[dueDateClass]" v-if="task.dueDate.label !== ''">{{task.dueDate.label}} 截止</div>
             <div class="task-card--cost">{{task.cost}}</div>
         </div>
+        <div class="task-card--line" v-if="task.subtaskCount.total > 0">
+            <div class="task-card--subtasks" @click="toggleSubTask()">
+                <i class="fui-list-bulleted"></i>
+                {{task.subtaskCount.done}}/{{task.subtaskCount.total}}
+            </div>
+        </div>
+        <div class="task-card--line">
+            <div class="task-card--timer" v-show="isPlay">
+                <i class="fui-time"></i>
+                <span>{{timer}}</span>
+            </div>
+        </div>
     </div>
 </template>
 
 <script>
 import {TASK_STATUS as STATUS} from '../utils/const.js';
+import {millisecondsToObject} from '../utils/util';
+
 export default {
     props: ['task'],
     data() {
@@ -57,6 +65,10 @@ export default {
         },
         dueDateClass() {
             return 'task-card--dueDate__' + this.task.dueDate.type;
+        },
+        timer() {
+            let obj = millisecondsToObject(this.task.timer);
+            return obj.hours + ':' + obj.minutes + ':' + obj.seconds;
         }
     },
     methods: {
@@ -156,6 +168,10 @@ export default {
             padding: 0px 5px;
             background-color: $light-gray;
             border-radius: 2px;
+        }
+        &--timer {
+            float: left;
+            font-size: 12px;
         }
     }
     .member-avatar {
