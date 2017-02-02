@@ -47,13 +47,15 @@ let getTaskByStatus = (tasks, status) => {
     }
     return null;
 };
-let startTask = task => {
+let startTask = (task, timer = 0) => {
     logger.log(`start task ${task._id}`);
-    var now = new Date().getTime();
-    task.lastStartTime = now;
+    if (timer === 0) {
+        var now = new Date().getTime();
+        task.lastStartTime = now;
+    }
+    task.timer = timer;
     task.status = TASK_STATUS.PLAYING;
     taskService.save(task);
-    task.timer = 0;
     // start task timer
     taskTimer = setInterval(() => {
         task.timer += 1000;
@@ -137,6 +139,10 @@ export default {
                 ): void => {
                     this.projects = projects;
                     this.tasks = tasks;
+                    let pTask = getTaskByStatus(tasks, TASK_STATUS.PLAYING);
+                    if (pTask != null) {
+                        startTask(pTask, new Date() - pTask.lastStartTime);
+                    }
                 }));
     }
 };
