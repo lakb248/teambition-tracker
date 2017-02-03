@@ -85,6 +85,7 @@ class Task {
                     return {
                         _id: task._id,
                         objectId: avTask ? avTask.id : undefined,
+                        projectId: task._projectId,
                         content: task.content,
                         subtasks: subtasks,
                         dueDate: this._dueDateBeautify(task.dueDate),

@@ -13,7 +13,7 @@
         </div>
         <div class="task-panel">
             <ul>
-                <li v-for="task in tasks" style="margin-bottom: 10px;">
+                <li v-for="task in filteredTask" style="margin-bottom: 10px;">
                     <task :task="task" @status-change="onTaskStatusChange"></task>
                 </li>
             </ul>
@@ -81,7 +81,8 @@ export default {
         return {
             projects: [],
             tasks: [],
-            projectSearchKey: ''
+            projectSearchKey: '',
+            selectedProjectId: -1
         };
     },
     components: {
@@ -97,11 +98,20 @@ export default {
                 return project.name.indexOf(lowerCaseKey) !== -1 ||
                     project.name.indexOf(upperCaseKey) !== -1;
             });
+        },
+        filteredTask() {
+            if (this.selectedProjectId === -1) {
+                return this.tasks;
+            }
+            return this.tasks.filter(task => {
+                return task.projectId === this.selectedProjectId;
+            });
         }
     },
     methods: {
         onProjectSelected(projectId) {
             logger.log(`project ${projectId} selected`);
+            this.selectedProjectId = projectId;
         },
         onTaskStatusChange(event) {
             logger.log(`change task ${event.id} status to ${event.status}`);
@@ -141,6 +151,7 @@ export default {
                     this.tasks = tasks;
                     let pTask = getTaskByStatus(tasks, TASK_STATUS.PLAYING);
                     if (pTask != null) {
+                        // start task on init
                         startTask(pTask, new Date() - pTask.lastStartTime);
                     }
                 }));
