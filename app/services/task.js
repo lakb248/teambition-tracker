@@ -6,7 +6,13 @@ import AVTask from '../leancloud/task';
 import ActivityService from './activity';
 import EventEmitter from './event';
 
-import {arrayToObject, setAvObjectByPlainObject, getObjectByKeyValue, millisecondsToObject} from '../utils/util';
+import {
+    arrayToObject,
+    setAvObjectByPlainObject,
+    getObjectByKeyValue,
+    millisecondsToObject,
+    getObjectFromAVRes
+} from '../utils/util';
 import fecha from 'fecha';
 import Logger from '../utils/logger';
 import Cache from './cache';
@@ -53,52 +59,10 @@ class Task {
                 avTasks = arrayToObject(avTasks, 'taskId');
                 avActivities = arrayToObject(avActivities, 'taskId', true);
                 let res = tbTasks.map(task => {
-                    // get involveMembers
-                    let involveMembers = [];
-                    task.involveMembers.forEach(memberId => {
-                        involveMembers.push(tbMembers[memberId]);
-                    });
-                    // get subtasks and subtaskCount
-                    let subtasks = tbSubTask[task._id];
-                    let subtaskCount = {
-                        done: 0,
-                        total: 0
-                    };
-                    if (subtasks) {
-                        subtasks.forEach(subtask => {
-                            subtaskCount.total ++;
-                            if (subtask.isDone) {
-                                subtaskCount.done ++;
-                            }
-                        });
-                    }
                     let avActivity = avActivities[task._id];
                     // get task from leancloud
                     let avTask = avTasks[task._id];
-                    let status = avTask ? avTask.status : STATUS.PAUSE;
-                    let timer = 0;
-                    let lastStartTime = avTask ? avTask.lastStartTime : new Date();
-                    if (status === STATUS.PLAYING) {
-                        timer = new Date().getTime() - lastStartTime;
-                    }
-                    // generate task
-                    return {
-                        _id: task._id,
-                        objectId: avTask ? avTask.id : undefined,
-                        projectId: task._projectId,
-                        content: task.content,
-                        subtasks: subtasks,
-                        dueDate: this._dueDateBeautify(task.dueDate),
-                        created: task.created,
-                        subtaskCount: subtaskCount,
-                        priority: task.priority,
-                        involveMembers: involveMembers,
-                        activity: avActivity,
-                        cost: this._formatMilliseconds(this._getCostFromActivity(avActivity)),
-                        status: status,
-                        lastStartTime: lastStartTime,
-                        timer: timer
-                    };
+                    return this._generateTask(task, tbMembers, tbSubTask, avTask, avActivity);
                 });
                 Cache.set('tasks', res);
                 return res;
@@ -130,10 +94,7 @@ class Task {
             logger.log('task save succeed', task._id);
             let tasks = Cache.get('tasks');
             let updatedTask = getObjectByKeyValue(tasks, '_id', task._id);
-            updatedTask.objectId = res.id;
-            updatedTask.taskId = res.attributes.taskId;
-            updatedTask.lastStartTime = res.attributes.lastStartTime;
-            updatedTask.status = res.attributes.status;
+            getObjectFromAVRes(res, updatedTask);
             logger.log('update task in cache and trigger `all-task` event');
             EventEmitter.emit('all-task', tasks);
             return res;
@@ -178,6 +139,57 @@ class Task {
     _formatMilliseconds(milliseconds) {
         let obj = millisecondsToObject(milliseconds);
         return obj.hours + 'h ' + obj.minutes + 'm ' + obj.seconds + 's';
+    }
+    _generateTask(task, tbMembers, tbSubTask, avTask, avActivity) {
+        // get involveMembers
+        let involveMembers = [];
+        task.involveMembers.forEach(memberId => {
+            involveMembers.push(tbMembers[memberId]);
+        });
+        // get subtasks and subtaskCount
+        let subtasks = tbSubTask[task._id];
+        let subtaskCount = this._getSubtasksCount(subtasks);
+        // get status of task
+        let status = avTask ? avTask.status : STATUS.PAUSE;
+        // get timer of task
+        let timer = 0;
+        let lastStartTime = avTask ? avTask.lastStartTime : new Date();
+        if (status === STATUS.PLAYING) {
+            timer = new Date().getTime() - lastStartTime;
+        }
+        // generate task
+        return {
+            _id: task._id,
+            objectId: avTask ? avTask.id : undefined,
+            projectId: task._projectId,
+            content: task.content,
+            subtasks: subtasks,
+            dueDate: this._dueDateBeautify(task.dueDate),
+            created: task.created,
+            subtaskCount: subtaskCount,
+            priority: task.priority,
+            involveMembers: involveMembers,
+            activity: avActivity,
+            cost: this._formatMilliseconds(this._getCostFromActivity(avActivity)),
+            status: status,
+            lastStartTime: lastStartTime,
+            timer: timer
+        };
+    }
+    _getSubtasksCount(subtasks) {
+        let subtaskCount = {
+            done: 0,
+            total: 0
+        };
+        if (subtasks) {
+            subtasks.forEach(subtask => {
+                subtaskCount.total ++;
+                if (subtask.isDone) {
+                    subtaskCount.done ++;
+                }
+            });
+        }
+        return subtaskCount;
     }
     _dueDateBeautify(dueDate) {
         if (dueDate == null) {

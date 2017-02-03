@@ -70,10 +70,21 @@ let millisecondsToObject = milliseconds => {
         seconds: (seconds >= 10 ? seconds : ('0' + seconds))
     };
 };
+let getObjectFromAVRes = (avRes, base = {}) => {
+    let attributes = avRes.attributes;
+    for (var key in attributes) {
+        if (attributes.hasOwnProperty(key)) {
+            base[key] = attributes[key];
+        }
+    }
+    base.objectId = avRes.id;
+    return base;
+};
 export {
     isArray,
     arrayToObject,
     getObjectByKeyValue,
     setAvObjectByPlainObject,
-    millisecondsToObject
+    millisecondsToObject,
+    getObjectFromAVRes
 };

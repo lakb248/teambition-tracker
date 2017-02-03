@@ -1,7 +1,7 @@
 import AVActivity from '../leancloud/activity';
 import Logger from '../utils/logger';
 import AV from '../leancloud/leancloud';
-import {setAvObjectByPlainObject, getObjectByKeyValue} from '../utils/util';
+import {setAvObjectByPlainObject, getObjectByKeyValue, getObjectFromAVRes} from '../utils/util';
 import EventEmitter from './event';
 
 import Cache from './cache';
@@ -52,13 +52,7 @@ class Activity {
             .then(res => {
                 if (res.length !== 0) {
                     res = res.map(activity => {
-                        let newActivity = {};
-                        newActivity.id = activity.id;
-                        newActivity.start = activity.attributes.start;
-                        newActivity.end = activity.attributes.end;
-                        newActivity.location = activity.attributes.location;
-                        newActivity.taskId = activity.attributes.taskId;
-                        return newActivity;
+                        return getObjectFromAVRes(activity);
                     });
                     Cache.set('activity', res);
                     return res;

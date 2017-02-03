@@ -47,8 +47,19 @@ let getTaskByStatus = (tasks, status) => {
     }
     return null;
 };
+
+/**
+ * start task
+ * 1. set lastStartTime to now if timer is zero
+ * 2. set task timer
+ * 3. change the status of task
+ * 4. start the task timer
+ * @param  {Object} task      the task to be start
+ * @param  {Number} [timer=0] the initial timer of task
+ */
 let startTask = (task, timer = 0) => {
     logger.log(`start task ${task._id}`);
+
     if (timer === 0) {
         var now = new Date().getTime();
         task.lastStartTime = now;
@@ -56,18 +67,30 @@ let startTask = (task, timer = 0) => {
     task.timer = timer;
     task.status = TASK_STATUS.PLAYING;
     taskService.save(task);
+
     // start task timer
     taskTimer = setInterval(() => {
         task.timer += 1000;
     }, 1000);
 };
+
+/**
+ * pause task
+ * 1. reset task timer, and change the status of task
+ * 2. clear timer
+ * 3. create a new activity of task
+ * @param  {Object} task the task to be paused
+ */
 let pauseTask = task => {
     logger.log(`pause task ${task._id} and clear task timer`);
+
     task.timer = 0;
     task.status = TASK_STATUS.PAUSE;
     taskService.save(task);
+
     // stop the timer
     clearInterval(taskTimer);
+
     // create a new activivty
     let activity = {};
     activity.start = task.lastStartTime;
