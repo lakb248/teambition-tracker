@@ -4,13 +4,29 @@ import Router from 'vue-router';
 import VueAxios from './utils/vue-axios';
 import {getToken, checkToken, refreshToken} from './utils/authorize';
 import config from './utils/config';
-import User from './services/user';
+import UserService from './services/user';
+import EventEmitter from './utils/event';
 
 import Index from './views/index.vue';
 
 require('./styles/index.scss');
 
 Vue.use(Router);
+
+EventEmitter.on('loading-show', () => {
+    /* global document */
+    let loading = document.querySelector('.loading');
+    if (loading != null) {
+        loading.style.display = 'block';
+    }
+});
+EventEmitter.on('loading-hide', () => {
+    /* global document */
+    let loading = document.querySelector('.loading');
+    if (loading != null) {
+        loading.style.display = 'none';
+    }
+});
 
 let router = new Router({
     routes: [{
@@ -25,13 +41,6 @@ let App = new Vue({
         return {
             me: {}
         };
-    },
-    mounted() {
-        /* global document */
-        let loading = document.querySelector('.loading');
-        if (loading != null) {
-            loading.style.display = 'none';
-        }
     }
 });
 // check token, then init vue application
@@ -48,10 +57,11 @@ if (token === '') {
                     token: token
                 });
                 App.$mount('.wrap');
-                let user = new User(App.request);
-                user.me()
+                let userService = new UserService(App.request);
+                userService.me()
                     .then((res: Object) => {
                         App.me = res;
+                        App._userId = res._id;
                     });
             } else {
                 refreshToken();

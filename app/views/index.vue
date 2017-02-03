@@ -30,7 +30,7 @@ import TaskCard from '../components/task.vue';
 import {TASK_STATUS} from '../utils/const.js';
 import {getObjectByKeyValue} from '../utils/util';
 import Logger from '../utils/logger';
-import EventEmitter from '../services/event';
+import EventEmitter from '../utils/event';
 
 let projectService = null;
 let taskService = null;
@@ -80,8 +80,9 @@ let startTask = (task, timer = 0) => {
  * 2. clear timer
  * 3. create a new activity of task
  * @param  {Object} task the task to be paused
+ * @param  {String} userId the userId
  */
-let pauseTask = task => {
+let pauseTask = (task, userId) => {
     logger.log(`pause task ${task._id} and clear task timer`);
 
     task.timer = 0;
@@ -96,6 +97,7 @@ let pauseTask = task => {
     activity.start = task.lastStartTime;
     activity.end = new Date().getTime();
     activity.taskId = task._id;
+    activity.userId = userId;
     activityService.save(activity);
 };
 
@@ -105,7 +107,8 @@ export default {
             projects: [],
             tasks: [],
             projectSearchKey: '',
-            selectedProjectId: -1
+            selectedProjectId: -1,
+            userId: -1
         };
     },
     components: {
@@ -140,16 +143,17 @@ export default {
             logger.log(`change task ${event.id} status to ${event.status}`);
             let task = getObjectByKeyValue(this.tasks, '_id', event.id);
             let pTask = getTaskByStatus(this.tasks, TASK_STATUS.PLAYING);
+            let userId = this.$parent._userId;
             if (event.status === TASK_STATUS.PLAYING) {
                 // stop task that is playing
                 if (pTask != null) {
-                    pauseTask(pTask);
+                    pauseTask(pTask, userId);
                 }
                 // start task
                 startTask(task);
             } else {
                 // pause task
-                pauseTask(task);
+                pauseTask(task, userId);
             }
         }
     },
@@ -177,6 +181,7 @@ export default {
                         // start task on init
                         startTask(pTask, new Date() - pTask.lastStartTime);
                     }
+                    EventEmitter.emit('loading-hide');
                 }));
     }
 };

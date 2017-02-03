@@ -4,7 +4,7 @@ import TBUser from '../teambition/user';
 import AV from '../leancloud/leancloud';
 import AVTask from '../leancloud/task';
 import ActivityService from './activity';
-import EventEmitter from './event';
+import EventEmitter from '../utils/event';
 
 import {
     arrayToObject,

@@ -1,5 +1,5 @@
 import TBSubTask from '../teambition/subtasks';
-import EventEmitter from './event';
+import EventEmitter from '../utils/event';
 
 class SubTask extends EventEmitter {
     constructor(request) {

@@ -36,8 +36,8 @@
                 </li>
             </ul>
         </div>
-        <div class="task-card--line">
-            <div class="task-card--timer" v-show="isPlay">
+        <div class="task-card--line" v-show="isPlay">
+            <div class="task-card--timer">
                 <i class="fui-time"></i>
                 <span>{{timer}}</span>
             </div>

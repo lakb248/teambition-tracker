@@ -1,20 +1,26 @@
 import TBUser from '../teambition/user';
+import Cache from './cache';
 
 class User {
     constructor(request) {
         this._tbUser = new TBUser(request);
     }
     me() {
+        if (Cache.get('me')) {
+            return Promise.resolve(Cache.get('me'));
+        }
         return this._tbUser.me()
             .then(res => {
                 let me = res.data;
-                return {
+                let user = {
                     _id: me._id,
                     name: me.name,
                     avatarUrl: me.avatarUrl,
                     snapperToken: me.snapperToken,
                     strikerAuth: me.strikerAuth
                 };
+                Cache.set('me', user);
+                return user;
             });
     }
     members() {

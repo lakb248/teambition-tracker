@@ -2,7 +2,7 @@ import AVActivity from '../leancloud/activity';
 import Logger from '../utils/logger';
 import AV from '../leancloud/leancloud';
 import {setAvObjectByPlainObject, getObjectByKeyValue, getObjectFromAVRes} from '../utils/util';
-import EventEmitter from './event';
+import EventEmitter from '../utils/event';
 
 import Cache from './cache';
 
@@ -30,12 +30,14 @@ class Activity {
         return result.then(res => {
             let activityList = Cache.get('activity');
             if (activity.objectId) {
+                // update activity in cache
                 let updatedActivity = getObjectByKeyValue(activityList, 'objectId', activity.objectId);
                 updatedActivity.start = res.attributes.start;
                 updatedActivity.end = res.attributes.end;
                 logger.log('update activity and trigger `all-activity` event');
                 EventEmitter.emit('all-activity', activityList);
             } else {
+                // create an activity in cache
                 activity.objectId = res.id;
                 activityList.push(activity);
                 logger.log('add activity and trigger `all-activity` event');
