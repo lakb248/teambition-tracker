@@ -1,45 +1,47 @@
 <template>
     <div class="task-card card"
         :class="[priorityClass]">
-        <div class="task-card--line">
-            <i class="task-card--setup" :class="{
-                        'fui-play': !isPlay,
-                        'fui-pause': isPlay
-                    }"
-                @click="toggleTaskStatus()"
-                    ></i>
-            <div class="task-card--content">
-                {{task.content}}
+        <i class="task-card--setup" :class="{
+                    'fui-play': !isPlay,
+                    'fui-pause': isPlay
+                }"
+            @click="toggleTaskStatus()"
+                ></i>
+        <div class="task-card--main">
+            <div class="task-card--line">
+                <div class="task-card--content">
+                    {{task.content}}
+                </div>
+                <div class="task-card--member">
+                    <span class="member-avatar" :title="member.name" v-for="member in task.involveMembers"
+                        :style="{'background-image': 'url(' + member.avatarUrl + ')'}"
+                    ></span>
+                </div>
             </div>
-            <div class="task-card--member">
-                <span class="member-avatar" :title="member.name" v-for="member in task.involveMembers"
-                    :style="{'background-image': 'url(' + member.avatarUrl + ')'}"
-                ></span>
+            <div class="task-card--line" v-if="task.dueDate.label !== '' || task.objectId">
+                <div class="task-card--dueDate" :class="[dueDateClass]" v-if="task.dueDate.label !== ''">{{task.dueDate.label}} 截止</div>
+                <div class="task-card--cost">{{task.cost}}</div>
             </div>
-        </div>
-        <div class="task-card--line" v-if="task.dueDate.label !== '' || task.objectId">
-            <div class="task-card--dueDate" :class="[dueDateClass]" v-if="task.dueDate.label !== ''">{{task.dueDate.label}} 截止</div>
-            <div class="task-card--cost">{{task.cost}}</div>
-        </div>
-        <div class="task-card--line" v-if="task.subtaskCount.total > 0">
-            <div class="task-card--subtasks" @click="toggleSubTask()">
-                <i class="fui-list-bulleted"></i>
-                {{task.subtaskCount.done}}/{{task.subtaskCount.total}}
+            <div class="task-card--line" v-if="task.subtaskCount.total > 0">
+                <div class="task-card--subtasks" @click="toggleSubTask()">
+                    <i class="fui-list-bulleted"></i>
+                    {{task.subtaskCount.done}}/{{task.subtaskCount.total}}
+                </div>
             </div>
-        </div>
-        <div class="subtask-panel" v-show="!!task.subtasks && isSubtaskShow">
-            <ul>
-                <li v-for="subtask in task.subtasks">
-                    <div class="subtask">
-                        {{subtask.content}}
-                    </div>
-                </li>
-            </ul>
-        </div>
-        <div class="task-card--line" v-show="isPlay">
-            <div class="task-card--timer">
-                <i class="fui-time"></i>
-                <span>{{timer}}</span>
+            <div class="subtask-panel" v-show="!!task.subtasks && isSubtaskShow">
+                <ul>
+                    <li v-for="subtask in task.subtasks">
+                        <div class="subtask">
+                            {{subtask.content}}
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="task-card--line" v-show="isPlay">
+                <div class="task-card--timer">
+                    <i class="fui-time"></i>
+                    <span>{{timer}}</span>
+                </div>
             </div>
         </div>
     </div>
@@ -105,6 +107,10 @@ export default {
             border-left-color: $danger-color;
         }
 
+        &--main {
+            overflow: hidden;
+        }
+
         &--line {
             float: left;
             width: 100%;
@@ -118,6 +124,7 @@ export default {
             float: left;
             width: 20px;
             height: 20px;
+            font-size: 10px;
             line-height: 20px;
             text-align: center;
             margin-right: 5px;
