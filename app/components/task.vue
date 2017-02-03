@@ -31,9 +31,7 @@
             <div class="subtask-panel" v-show="!!task.subtasks && isSubtaskShow">
                 <ul>
                     <li v-for="subtask in task.subtasks">
-                        <div class="subtask">
-                            {{subtask.content}}
-                        </div>
+                        <subtask :subtask="subtask"></subtask>
                     </li>
                 </ul>
             </div>
@@ -50,9 +48,13 @@
 <script>
 import {TASK_STATUS as STATUS} from '../utils/const.js';
 import {millisecondsToObject} from '../utils/util';
+import SubTask from './subtask.vue';
 
 export default {
     props: ['task'],
+    components: {
+        subtask: SubTask
+    },
     data() {
         return {
             isSubtaskShow: false
