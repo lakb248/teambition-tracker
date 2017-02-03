@@ -81,8 +81,9 @@ let startTask = (task, timer = 0) => {
  * 3. create a new activity of task
  * @param  {Object} task the task to be paused
  * @param  {String} userId the userId
+ * @param  {String} subtaskId the id of subtask if exist
  */
-let pauseTask = (task, userId) => {
+let pauseTask = (task, userId, subtaskId) => {
     logger.log(`pause task ${task._id} and clear task timer`);
 
     task.timer = 0;

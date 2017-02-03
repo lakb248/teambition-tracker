@@ -191,16 +191,10 @@ export default {
         margin-left: 5px;
     }
     .subtask-panel {
+        float: left;
+        width: 100%;
         font-size: 12px;
         border-radius: 2px;
-        padding: 10px;
         overflow: hidden;
-        ul {
-            list-style-type: initial;
-            padding-left: 20px;
-        }
-        li {
-            margin: 5px 0px;
-        }
     }
 </style>
