@@ -10,7 +10,6 @@ import {
     arrayToObject,
     setAvObjectByPlainObject,
     getObjectByKeyValue,
-    millisecondsToObject,
     getObjectFromAVRes
 } from '../utils/util';
 import fecha from 'fecha';
@@ -123,7 +122,7 @@ class Task {
         tasks.forEach(task => {
             let activityList = activities[task._id];
             task.activity = activityList;
-            task.cost = this._formatMilliseconds(this._getCostFromActivity(activityList));
+            task.cost = this._getCostFromActivity(activityList);
         });
         logger.log('activity updated and trigger `all-task` event');
         EventEmitter.emit('all-task', tasks);
@@ -135,10 +134,6 @@ class Task {
             cost += activity.end - activity.start;
         });
         return cost;
-    }
-    _formatMilliseconds(milliseconds) {
-        let obj = millisecondsToObject(milliseconds);
-        return obj.hours + 'h ' + obj.minutes + 'm ' + obj.seconds + 's';
     }
     _generateTask(task, tbMembers, tbSubTask, avTask, avActivity) {
         // get involveMembers
@@ -170,7 +165,7 @@ class Task {
             priority: task.priority,
             involveMembers: involveMembers,
             activity: avActivity,
-            cost: this._formatMilliseconds(this._getCostFromActivity(avActivity)),
+            cost: this._getCostFromActivity(avActivity),
             status: status,
             lastStartTime: lastStartTime,
             timer: timer

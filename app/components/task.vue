@@ -18,9 +18,9 @@
                     ></span>
                 </div>
             </div>
-            <div class="task-card--line" v-if="task.dueDate.label !== '' || task.objectId">
+            <div class="task-card--line" v-if="task.dueDate.label !== '' || task.cost > 999">
                 <div class="task-card--dueDate" :class="[dueDateClass]" v-if="task.dueDate.label !== ''">{{task.dueDate.label}} 截止</div>
-                <div class="task-card--cost">{{task.cost}}</div>
+                <div class="task-card--cost" v-if="task.cost > 999">{{cost}}</div>
             </div>
             <div class="task-card--line" v-if="task.subtaskCount.total > 0">
                 <div class="task-card--subtasks" @click="toggleSubTask()">
@@ -71,6 +71,10 @@ export default {
         timer() {
             let obj = millisecondsToObject(this.task.timer);
             return obj.hours + ':' + obj.minutes + ':' + obj.seconds;
+        },
+        cost() {
+            let obj = millisecondsToObject(this.task.cost);
+            return obj.hours + 'h ' + obj.minutes + 'm ' + obj.seconds + 's';
         }
     },
     methods: {
