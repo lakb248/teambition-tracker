@@ -11,6 +11,15 @@ class TBSubTask extends Model {
             url: '/v2/tasks/me/subtasks'
         });
     }
+    update(id, isDone) {
+        return this._http.request({
+            url: `/subtasks/${id}/isDone`,
+            data: {
+                isDone: Boolean(isDone)
+            },
+            method: 'PUT'
+        });
+    }
 }
 
 export default TBSubTask;

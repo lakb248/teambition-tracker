@@ -31,7 +31,7 @@
             <div class="subtask-panel" v-show="!!task.subtasks && isSubtaskShow">
                 <ul>
                     <li v-for="subtask in task.subtasks">
-                        <subtask :subtask="subtask"></subtask>
+                        <subtask :subtask="subtask" @done-status-change="onDoneStatusChange"></subtask>
                     </li>
                 </ul>
             </div>
@@ -86,6 +86,10 @@ export default {
                 id: this.task._id,
                 status: newStatus
             });
+        },
+        onDoneStatusChange(event) {
+            event.type = 'subtask';
+            this.$emit('done-status-change', event);
         }
     }
 };

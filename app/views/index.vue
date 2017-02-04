@@ -14,7 +14,7 @@
         <div class="task-panel">
             <ul>
                 <li v-for="task in filteredTask" style="margin-bottom: 10px;">
-                    <task :task="task" @status-change="onTaskStatusChange"></task>
+                    <task :task="task" @status-change="onTaskStatusChange" @done-status-change="onDoneStatusChange"></task>
                 </li>
             </ul>
         </div>
@@ -25,6 +25,7 @@
 import ProjectService from '../services/project';
 import ActivityService from '../services/activity';
 import TaskService from '../services/task';
+import SubtaskService from '../services/subtask';
 import ProjectCard from '../components/project.vue';
 import TaskCard from '../components/task.vue';
 import {TASK_STATUS} from '../utils/const.js';
@@ -34,6 +35,7 @@ import EventEmitter from '../utils/event';
 
 let projectService = null;
 let taskService = null;
+let subtaskService = null;
 let activityService = null;
 let taskTimer = -1;
 let logger = new Logger('[index.vue]');
@@ -156,11 +158,21 @@ export default {
                 // pause task
                 pauseTask(task, userId);
             }
+        },
+        onDoneStatusChange(event) {
+            logger.log(`set done status of subtask ${event.id} to ${event.isDone}`);
+            if (event.type === 'subtask') {
+                subtaskService.save({
+                    _id: event.id,
+                    isDone: event.isDone
+                });
+            }
         }
     },
     mounted() {
         projectService = new ProjectService(this.request);
         taskService = new TaskService(this.request, this.axios);
+        subtaskService = new SubtaskService(this.request);
         activityService = new ActivityService();
         EventEmitter.on('all-task', tasks => {
             this.tasks = tasks;
