@@ -14,7 +14,7 @@ import {
 } from '../utils/util';
 import fecha from 'fecha';
 import Logger from '../utils/logger';
-import Cache from './cache';
+import Cache from '../utils/cache';
 
 import {TASK_STATUS as STATUS, MILLISECONDS, DUEDATE_TYPE} from '../utils/const.js';
 

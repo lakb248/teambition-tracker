@@ -4,7 +4,7 @@ import AV from '../leancloud/leancloud';
 import {setAvObjectByPlainObject, getObjectByKeyValue, getObjectFromAVRes} from '../utils/util';
 import EventEmitter from '../utils/event';
 
-import Cache from './cache';
+import Cache from '../utils/cache';
 
 let logger = new Logger('[serviecs/activity]');
 

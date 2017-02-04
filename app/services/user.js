@@ -1,5 +1,5 @@
 import TBUser from '../teambition/user';
-import Cache from './cache';
+import Cache from '../utils/cache';
 
 class User {
     constructor(request) {

@@ -1,7 +1,7 @@
 import TBSubTask from '../teambition/subtask';
 import EventEmitter from '../utils/event';
 import Logger from '../utils/logger';
-import Cache from './cache';
+import Cache from '../utils/cache';
 import {getObjectByKeyValue} from '../utils/util';
 
 let logger = new Logger('[service/subtask]');

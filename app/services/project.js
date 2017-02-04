@@ -1,6 +1,6 @@
 import TBProject from '../teambition/project';
 import fecha from 'fecha';
-import Cache from './cache';
+import Cache from '../utils/cache';
 class Project {
     constructor(request) {
         this._tbProject = new TBProject(request);
