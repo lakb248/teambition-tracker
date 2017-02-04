@@ -31,9 +31,7 @@
             <div class="subtask-panel" v-show="!!task.subtasks && isSubtaskShow">
                 <ul>
                     <li v-for="subtask in task.subtasks">
-                        <div class="subtask">
-                            {{subtask.content}}
-                        </div>
+                        <subtask :subtask="subtask" @done-status-change="onDoneStatusChange"></subtask>
                     </li>
                 </ul>
             </div>
@@ -50,9 +48,13 @@
 <script>
 import {TASK_STATUS as STATUS} from '../utils/const.js';
 import {millisecondsToObject} from '../utils/util';
+import SubTask from './subtask.vue';
 
 export default {
     props: ['task'],
+    components: {
+        subtask: SubTask
+    },
     data() {
         return {
             isSubtaskShow: false
@@ -88,6 +90,10 @@ export default {
                 id: this.task._id,
                 status: newStatus
             });
+        },
+        onDoneStatusChange(event) {
+            event.type = 'subtask';
+            this.$emit('done-status-change', event);
         }
     }
 };
@@ -193,16 +199,10 @@ export default {
         margin-left: 5px;
     }
     .subtask-panel {
+        float: left;
+        width: 100%;
         font-size: 12px;
         border-radius: 2px;
-        padding: 10px;
         overflow: hidden;
-        ul {
-            list-style-type: initial;
-            padding-left: 20px;
-        }
-        li {
-            margin: 5px 0px;
-        }
     }
 </style>

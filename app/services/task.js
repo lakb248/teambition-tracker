@@ -1,9 +1,9 @@
 import TBTask from '../teambition/task';
-import TBSubTask from '../teambition/subtask';
 import TBUser from '../teambition/user';
 import AV from '../leancloud/leancloud';
 import AVTask from '../leancloud/task';
 import ActivityService from './activity';
+import SubtaskService from './subtask';
 import EventEmitter from '../utils/event';
 
 import {
@@ -24,12 +24,15 @@ class Task {
     constructor(request, axios) {
         this._tbTask = new TBTask(request);
         this._tbUser = new TBUser(request);
-        this._tbSubTask = new TBSubTask(request);
+        this._subtaskService = new SubtaskService(request);
 
         this._taskQuery = new AV.Query('AVTask');
         this._activityService = new ActivityService();
         EventEmitter.on('all-activity', activityList => {
             this._onActivityChange(activityList);
+        });
+        EventEmitter.on('all-subtask', subtasks => {
+            this._onSubtasksChange(subtasks);
         });
         this._axios = axios;
     }
@@ -38,7 +41,7 @@ class Task {
             return Promise.resolve(Cache.get('tasks'));
         }
         let tbTaskReq = this._tbTask.me();
-        let tbSubTaskReq = this._tbSubTask.me();
+        let tbSubTaskReq = this._subtaskService.me();
         let tbMembersReq = this._tbUser.members();
 
         let avTaskReq = this._allAVTask();
@@ -48,7 +51,7 @@ class Task {
             .then(this._axios.spread((tbTaskRes, tbMemberRes, tbSubTaskRes, avTaskRes, avActivityReq) => {
                 let tbTasks = tbTaskRes.data;
                 let tbMembers = tbMemberRes.data;
-                let tbSubTask = tbSubTaskRes.data;
+                let tbSubTask = tbSubTaskRes;
 
                 let avTasks = avTaskRes;
                 let avActivities = avActivityReq;
@@ -125,6 +128,17 @@ class Task {
             task.cost = this._getCostFromActivity(activityList);
         });
         logger.log('activity updated and trigger `all-task` event');
+        EventEmitter.emit('all-task', tasks);
+    }
+    _onSubtasksChange(subtasks) {
+        subtasks = arrayToObject(subtasks, '_taskId', true);
+        let tasks = Cache.get('tasks');
+        tasks.forEach(task => {
+            let subtaskList = subtasks[task._id];
+            task.subtasks = subtaskList;
+            task.subtaskCount = this._getSubtasksCount(subtaskList);
+        });
+        logger.log('subtasks updated and trigger `all-task` event');
         EventEmitter.emit('all-task', tasks);
     }
     _getCostFromActivity(activity) {
