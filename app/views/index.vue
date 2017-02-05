@@ -170,6 +170,7 @@ export default {
         }
     },
     mounted() {
+        clearInterval(taskTimer);
         projectService = new ProjectService(this.request);
         taskService = new TaskService(this.request, this.axios);
         subtaskService = new SubtaskService(this.request);

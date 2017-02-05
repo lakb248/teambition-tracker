@@ -1,4 +1,3 @@
-/* @flow */
 import Vue from 'vue';
 import Router from 'vue-router';
 import VueAxios from './utils/vue-axios';
@@ -28,16 +27,25 @@ EventEmitter.on('loading-hide', () => {
     }
 });
 
+const Activity = resolve => {
+    require.ensure(['./views/activity.vue'], () => {
+        resolve(require('./views/activity.vue'));
+    });
+};
+
 let router = new Router({
     routes: [{
         path: '/',
         component: Index
+    }, {
+        path: '/activity',
+        component: Activity
     }]
 });
 
 let App = new Vue({
     router: router,
-    data(): Object {
+    data() {
         return {
             me: {}
         };
@@ -49,7 +57,7 @@ if (token === '') {
     refreshToken();
 } else {
     checkToken(token)
-        .then((success: boolean) => {
+        .then(success => {
             if (success) {
                 // init axios object, then attach to vue instance
                 Vue.use(VueAxios, {
@@ -59,7 +67,7 @@ if (token === '') {
                 App.$mount('.wrap');
                 let userService = new UserService(App.request);
                 userService.me()
-                    .then((res: Object) => {
+                    .then(res => {
                         App.me = res;
                         App._userId = res._id;
                     });
