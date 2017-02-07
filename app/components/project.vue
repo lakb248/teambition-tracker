@@ -6,7 +6,6 @@
             <p class="project-overview--createtime">{{project.created}}</p>
             <p class="project-overview--createtime">04:23 h</p>
         </div>
-        <div class="project-card--more"></div>
     </div>
 </template>
 
