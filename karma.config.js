@@ -1,6 +1,5 @@
 var webpack = require('webpack');
 var baseConfig = require('./webpack.base.config');
-var merge = require('webpack-merge');
 delete baseConfig.entry;
 
 // add isparta-loader to vue file
@@ -10,7 +9,7 @@ webpackConfig.plugins = (baseConfig.plugins || []).concat([
         options: {
             vue: {
                 loaders: {
-                    js: 'isparta'
+                    js: 'isparta-loader'
                 }
             }
         }
@@ -19,9 +18,11 @@ webpackConfig.plugins = (baseConfig.plugins || []).concat([
 webpackConfig.module.rules = (webpackConfig.module.rules || []).concat([{
     enforce: 'pre',
     test: /\.js?$/,
-    loader: 'isparta',
+    loader: 'isparta-loader',
     exclude: [/node_modules/, /test/]
 }]);
+
+var isDev = process.env.NODE_ENV === 'develop';
 
 module.exports = function(config) {
     config.set({
@@ -46,6 +47,7 @@ module.exports = function(config) {
         webpackMiddleware: {
             noInfo: true
         },
-        singleRun: true
+        autoWatch: isDev,
+        singleRun: !isDev
     });
 };
