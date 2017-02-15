@@ -16,4 +16,58 @@ describe('utils/calendar-util.js === getMaxDayOfMonth', () => {
     it('should have 28 days in 2017.02', () => {
         expect(Calendar.getMaxDayOfMonth(2017, 2)).toBe(28);
     });
+    it('should have 31 days in 2017.12', () => {
+        expect(Calendar.getMaxDayOfMonth(2017, 12)).toBe(31);
+    });
+    it('should have 30 days in 2017.11', () => {
+        expect(Calendar.getMaxDayOfMonth(2017, 11)).toBe(30);
+    });
+    it('should have 29 days in 2016.02', () => {
+        expect(Calendar.getMaxDayOfMonth(2016, 2)).toBe(29);
+    });
+});
+
+// getFirstDayOfMonth
+describe('utils/calendar-util.js === getFirstDayOfMonth', () => {
+    it('the first day of 2017.01 should be monday', () => {
+        expect(Calendar.getFirstDayOfMonth(2017, 1)).toBe(0);
+    });
+    it('the first day of 2017.02 should be wednesday', () => {
+        expect(Calendar.getFirstDayOfMonth(2017, 2)).toBe(3);
+    });
+    it('the first day of 2017.03 should be wednesday', () => {
+        expect(Calendar.getFirstDayOfMonth(2017, 3)).toBe(3);
+    });
+});
+
+// getLastMonth
+describe('utils/calendar-util.js === getLastMonth', () => {
+    it('the month before 2017.01 should be 2016.12', () => {
+        expect(Calendar.getLastMonth(2017, 1)).toEqual({
+            year: 2016,
+            month: 12
+        });
+    });
+    it('the month before 2017.02 should be 2017.01', () => {
+        expect(Calendar.getLastMonth(2017, 2)).toEqual({
+            year: 2017,
+            month: 1
+        });
+    });
+});
+
+// getNextMonth
+describe('utils/calendar-util.js === getNextMonth', () => {
+    it('the month after 2016.12 should be 2017.01', () => {
+        expect(Calendar.getNextMonth(2016, 12)).toEqual({
+            year: 2017,
+            month: 1
+        });
+    });
+    it('the month after 2017.01 should be 2017.02', () => {
+        expect(Calendar.getNextMonth(2017, 1)).toEqual({
+            year: 2017,
+            month: 2
+        });
+    });
 });
