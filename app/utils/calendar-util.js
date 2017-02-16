@@ -108,5 +108,42 @@ export default {
             year: year,
             month: month + 1
         };
+    },
+    getCalendarViewModel(year, month) {
+        let firstDayOfMonth = this.getFirstDayOfMonth(year, month);
+        let nextMonth = this.getNextMonth(year, month);
+        let firstDayOfNextMonth = this.getFirstDayOfMonth(nextMonth.year, nextMonth.month);
+
+        let daysOfMonth = this.getMaxDayOfMonth(year, month);
+        let viewModel = [];
+        let week = [];
+        let index = 1;
+        let cellsOfCalendar = firstDayOfMonth + daysOfMonth +
+            (firstDayOfNextMonth === 0 ? 0 : (7 - firstDayOfNextMonth));
+        for (let i = 1; i <= cellsOfCalendar; i++) {
+            if (i % 7 === 1) {
+                week = [];
+            }
+            if (i < firstDayOfMonth + 1) {
+                week.push({
+                    type: 'blank'
+                });
+            } else if (index <= daysOfMonth) {
+                week.push({
+                    type: 'normal',
+                    date: index,
+                    day: i % 7
+                });
+                index++;
+            } else {
+                week.push({
+                    type: 'blank'
+                });
+            }
+            if (i % 7 === 0) {
+                viewModel.push(week);
+            }
+        }
+        return viewModel;
     }
 };
