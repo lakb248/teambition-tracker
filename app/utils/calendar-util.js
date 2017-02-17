@@ -1,3 +1,4 @@
+const WEEK_DAY = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 export default {
     /**
      * if the given year is leap year
@@ -109,7 +110,7 @@ export default {
             month: month + 1
         };
     },
-    getCalendarViewModel(year, month) {
+    getCalendarViewModel(year, month, type = 'simple') {
         let firstDayOfMonth = this.getFirstDayOfMonth(year, month);
         let nextMonth = this.getNextMonth(year, month);
         let firstDayOfNextMonth = this.getFirstDayOfMonth(nextMonth.year, nextMonth.month);
@@ -120,28 +121,49 @@ export default {
         let index = 1;
         let cellsOfCalendar = firstDayOfMonth + daysOfMonth +
             (firstDayOfNextMonth === 0 ? 0 : (7 - firstDayOfNextMonth));
+
+        let isSimple = type === 'simple';
+
         for (let i = 1; i <= cellsOfCalendar; i++) {
             if (i % 7 === 1) {
                 week = [];
             }
             if (i < firstDayOfMonth + 1) {
-                week.push({
-                    type: 'blank'
-                });
+                if (!isSimple) {
+                    week.push({
+                        type: 'blank',
+                        day: WEEK_DAY[(i - 1) % 7]
+                    });
+                } else {
+                    week.push(0);
+                }
             } else if (index <= daysOfMonth) {
-                week.push({
-                    type: 'normal',
-                    date: index,
-                    day: i % 7
-                });
+                if (!isSimple) {
+                    week.push({
+                        type: 'normal',
+                        date: index,
+                        day: WEEK_DAY[(i - 1) % 7]
+                    });
+                } else {
+                    week.push(index);
+                }
                 index++;
             } else {
-                week.push({
-                    type: 'blank'
-                });
+                if (!isSimple) {
+                    week.push({
+                        type: 'blank',
+                        day: WEEK_DAY[(i - 1) % 7]
+                    });
+                } else {
+                    week.push(0);
+                }
             }
             if (i % 7 === 0) {
-                viewModel.push(week);
+                if (!isSimple) {
+                    viewModel.push(week);
+                } else {
+                    viewModel.push(week.join(','));
+                }
             }
         }
         return viewModel;
