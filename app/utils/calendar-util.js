@@ -110,6 +110,14 @@ export default {
             month: month + 1
         };
     },
+
+    /**
+     * get calendar view-model of the given month
+     * @param  {Integer} year the year
+     * @param  {Integer} month the month
+     * @param  {String} type the type of view-model, simple or normal
+     * @return {Object} viewModel the view-model
+     */
     getCalendarViewModel(year, month, type = 'simple') {
         let firstDayOfMonth = this.getFirstDayOfMonth(year, month);
         let nextMonth = this.getNextMonth(year, month);
@@ -119,15 +127,18 @@ export default {
         let viewModel = [];
         let week = [];
         let index = 1;
+        // the total cells of the calendar
         let cellsOfCalendar = firstDayOfMonth + daysOfMonth +
             (firstDayOfNextMonth === 0 ? 0 : (7 - firstDayOfNextMonth));
 
         let isSimple = type === 'simple';
 
         for (let i = 1; i <= cellsOfCalendar; i++) {
+            // a new week
             if (i % 7 === 1) {
                 week = [];
             }
+            // blank before the month
             if (i < firstDayOfMonth + 1) {
                 if (!isSimple) {
                     week.push({
@@ -149,6 +160,7 @@ export default {
                 }
                 index++;
             } else {
+                // blank after the month
                 if (!isSimple) {
                     week.push({
                         type: 'blank',
@@ -158,6 +170,7 @@ export default {
                     week.push(0);
                 }
             }
+            // the last day of one week
             if (i % 7 === 0) {
                 if (!isSimple) {
                     viewModel.push(week);
