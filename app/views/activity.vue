@@ -1,13 +1,15 @@
 <template>
     <div>
-        <ul class="calendar-type-selector">
-            <li class="calendar-type-selector--option"
-                @click="calendarTypeChange('week')"
-                :class="{'selected': calendarType === 'week'}">week</li>
-            <li class="calendar-type-selector--option"
-                @click="calendarTypeChange('month')"
-                :class="{'selected': calendarType === 'month'}">month</li>
-        </ul>
+        <div class="activity-calendar-header">
+            <ul class="calendar-type-selector">
+                <li class="calendar-type-selector--option"
+                    @click="calendarTypeChange('week')"
+                    :class="{'selected': calendarType === 'week'}">周</li>
+                <li class="calendar-type-selector--option"
+                    @click="calendarTypeChange('month')"
+                    :class="{'selected': calendarType === 'month'}">月</li>
+            </ul>
+        </div>
         <activity-calendar></activity-calendar>
     </div>
 </template>
@@ -40,6 +42,9 @@ export default {
 
 <style lang="sass">
     @import "../styles/theme.scss";
+    .activity-calendar-header {
+        overflow: hidden;
+    }
     $selector-height: 30px;
     $selector-width: 70px;
     .calendar-type-selector {
