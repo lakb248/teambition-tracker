@@ -29,7 +29,7 @@ describe('utils/calendar-util.js === getMaxDayOfMonth', () => {
 
 // getFirstDayOfMonth
 describe('utils/calendar-util.js === getFirstDayOfMonth', () => {
-    it('the first day of 2017.01 should be monday', () => {
+    it('the first day of 2017.01 should be sunday', () => {
         expect(Calendar.getFirstDayOfMonth(2017, 1)).toBe(0);
     });
     it('the first day of 2017.02 should be wednesday', () => {
