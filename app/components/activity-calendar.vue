@@ -12,7 +12,7 @@
         <div class="calendar-view--content">
             <div class="calendar-view--week" v-for="week in calendar">
                 <div class="calendar-view--day" :class="{'weekend': index === 0 || index === 6}" v-for="(day, index) in week">
-                    {{day.date}}
+                    <span class="day-number" :class="{'today': isToday(day.date)}">{{day.date}}</span>
                 </div>
             </div>
         </div>
@@ -49,6 +49,14 @@ export default {
             calendar: []
         };
     },
+    methods: {
+        isToday(date) {
+            let now = new Date();
+            return now.getFullYear() === this.year &&
+                (now.getMonth() + 1) === this.month &&
+                now.getDate() === date;
+        }
+    },
     mounted() {
         this.calendar = CalendarUtil.getCalendarViewModel(this.year, this.month, 'normal');
     }
@@ -84,7 +92,7 @@ export default {
             float: left;
             width: 14.286%;
             height: 40px;
-            padding-left: 10px;
+            padding-left: 5px;
             &.weekend {
                 color: $gray;
             }
@@ -102,7 +110,7 @@ export default {
             float: left;
             width: 14.286%;
             height: 100%;
-            padding: 10px;
+            padding: 5px;
             border-right: 1px solid $light-gray;
             &:nth-of-type(7n) {
                 border: none;
@@ -110,6 +118,19 @@ export default {
             &.weekend {
                 color: $gray;
             }
+        }
+    }
+    $day-number-square: 24px;
+    .day-number {
+        float: left;
+        width: $day-number-square;
+        height: $day-number-square;
+        line-height: $day-number-square;
+        text-align: center;
+        &.today {
+            background-color: $primary-color;
+            border-radius: 50%;
+            color: $white;
         }
     }
 </style>

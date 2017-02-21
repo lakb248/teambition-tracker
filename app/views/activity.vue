@@ -9,7 +9,7 @@
                     @click="calendarTypeChange('month')"
                     :class="{'selected': calendarType === 'month'}">月</li>
             </ul>
-            <div class="today-selector">今天</div>
+            <div class="today-selector" @click="jumpToToday()">今天</div>
             <div class="month-selector">
                 <i class="fui-arrow-left" @click="lastMonth()"></i>
                 <div class="month-selector--view">{{year}}年{{month}}月</div>
@@ -52,6 +52,11 @@ export default {
             let res = CalendarUtil.getNextMonth(this.year, this.month);
             this.month = res.month;
             this.year = res.year;
+        },
+        jumpToToday() {
+            let now = new Date();
+            this.month = now.getMonth() + 1;
+            this.year = now.getFullYear();
         }
     }
 };
