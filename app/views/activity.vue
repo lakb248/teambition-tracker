@@ -109,6 +109,9 @@ export default {
         background-color: $primary-color;
         border-radius: 3px;
         cursor: pointer;
+        &:hover {
+            background-color: $primary-color-hover;
+        }
     }
     $month-selector-width: 200px;
     $month-selector-height: 30px;
@@ -129,6 +132,9 @@ export default {
             margin-top: ($month-selector-height - $month-selector-arrow-width) / 2;
             font-size: 14px;
             cursor: pointer;
+            &:hover {
+                color: $primary-color-hover;
+            }
         }
         &--view {
             float: left;

@@ -10,7 +10,7 @@
             <div class="calendar-view--weekname weekend">六</div>
         </div>
         <div class="calendar-view--content">
-            <div class="calendar-view--week" v-for="week in calendar">
+            <div class="calendar-view--week" :class="{'six': calendar.length > 5}" v-for="week in calendar">
                 <div class="calendar-view--day" :class="{'weekend': index === 0 || index === 6}" v-for="(day, index) in week">
                     <span class="day-number" :class="{'today': isToday(day.date)}">{{day.date}}</span>
                 </div>
@@ -100,7 +100,7 @@ export default {
         &--week {
             width:100%;
             height: 20%;
-            min-height: 128px;
+            min-height: 120px;
             border-bottom: 1px solid $light-gray;
             &.six {
                 height: 16.666%;
