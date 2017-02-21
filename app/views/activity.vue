@@ -9,8 +9,13 @@
                     @click="calendarTypeChange('month')"
                     :class="{'selected': calendarType === 'month'}">月</li>
             </ul>
+            <div class="month-selector">
+                <i class="fui-arrow-left" @click="lastMonth()"></i>
+                <div class="month-selector--view">{{year}}年{{month}}月</div>
+                <i class="fui-arrow-right" @click="nextMonth()"></i>
+            </div>
         </div>
-        <activity-calendar></activity-calendar>
+        <activity-calendar :month="month" :year="year"></activity-calendar>
     </div>
 </template>
 
@@ -25,16 +30,27 @@ export default {
     },
     data() {
         return {
-            calendarType: 'week'
+            calendarType: 'week',
+            month: new Date().getMonth() + 1,
+            year: new Date().getFullYear()
         };
     },
     mounted() {
         EventEmitter.emit('loading-hide');
-        console.log(CalendarUtil.getCalendarViewModel(2017, 5, 'normal'));
     },
     methods: {
-        calendarTypeChange(type) {
-            console.log(type);
+        calendarTypeChange(type = 'week') {
+            this.calendarType = type;
+        },
+        lastMonth() {
+            let res = CalendarUtil.getLastMonth(this.year, this.month);
+            this.month = res.month;
+            this.year = res.year;
+        },
+        nextMonth() {
+            let res = CalendarUtil.getNextMonth(this.year, this.month);
+            this.month = res.month;
+            this.year = res.year;
         }
     }
 };
@@ -73,6 +89,35 @@ export default {
             &:last-of-type {
                 border-radius: 0px 3px 3px 0px;
             }
+        }
+    }
+    $month-selector-width: 200px;
+    $month-selector-height: 30px;
+    $month-selector-arrow-width: 30px;
+    $month-selector-view-margin: 10px;
+    .month-selector {
+        position: absolute;
+        width: $month-selector-width;
+        height: $month-selector-height;
+        left: 50%;
+        margin-left: -$month-selector-width / 2;
+        i {
+            float: left;
+            width: $month-selector-arrow-width;
+            height: $month-selector-arrow-width;
+            line-height: $month-selector-arrow-width;
+            text-align: center;
+            margin-top: ($month-selector-height - $month-selector-arrow-width) / 2;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        &--view {
+            float: left;
+            width: $month-selector-width - 2 * $month-selector-view-margin - 2 * $month-selector-arrow-width;
+            height: $month-selector-height;
+            line-height: $month-selector-height;
+            text-align: center;
+            margin: 0px $month-selector-view-margin;
         }
     }
 </style>

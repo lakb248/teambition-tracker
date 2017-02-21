@@ -26,6 +26,22 @@ export default {
         type: {
             type: String,
             default: 'week'
+        },
+        month: {
+            type: Number,
+            default: new Date().getMonth() + 1
+        },
+        year: {
+            type: Number,
+            default: new Date().getFullYear()
+        }
+    },
+    watch: {
+        month(val) {
+            this.calendar = CalendarUtil.getCalendarViewModel(this.year, val, 'normal');
+        },
+        year(val) {
+            this.calendar = CalendarUtil.getCalendarViewModel(val, this.month, 'normal');
         }
     },
     data() {
@@ -34,8 +50,7 @@ export default {
         };
     },
     mounted() {
-        let now = new Date();
-        this.calendar = CalendarUtil.getCalendarViewModel(now.getFullYear(), now.getMonth() + 1, 'normal');
+        this.calendar = CalendarUtil.getCalendarViewModel(this.year, this.month, 'normal');
     }
 };
 </script>
