@@ -78,6 +78,7 @@ export default {
             bottom: 0px;
             left: 0px;
             right: 0px;
+            overflow-y: scroll;
         }
         &--weekname {
             float: left;
@@ -91,6 +92,7 @@ export default {
         &--week {
             width:100%;
             height: 20%;
+            min-height: 128px;
             border-bottom: 1px solid $light-gray;
             &.six {
                 height: 16.666%;

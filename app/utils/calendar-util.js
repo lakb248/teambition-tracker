@@ -119,7 +119,6 @@ export default {
      * @return {Object} viewModel the view-model
      */
     getCalendarViewModel(year, month, type = 'simple') {
-        console.log(year, month);
         let firstDayOfMonth = this.getFirstDayOfMonth(year, month);
         let nextMonth = this.getNextMonth(year, month);
         let firstDayOfNextMonth = this.getFirstDayOfMonth(nextMonth.year, nextMonth.month);

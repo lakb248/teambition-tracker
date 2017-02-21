@@ -9,6 +9,7 @@
                     @click="calendarTypeChange('month')"
                     :class="{'selected': calendarType === 'month'}">月</li>
             </ul>
+            <div class="today-selector">今天</div>
             <div class="month-selector">
                 <i class="fui-arrow-left" @click="lastMonth()"></i>
                 <div class="month-selector--view">{{year}}年{{month}}月</div>
@@ -30,7 +31,7 @@ export default {
     },
     data() {
         return {
-            calendarType: 'week',
+            calendarType: 'month',
             month: new Date().getMonth() + 1,
             year: new Date().getFullYear()
         };
@@ -90,6 +91,19 @@ export default {
                 border-radius: 0px 3px 3px 0px;
             }
         }
+    }
+    .today-selector {
+        float: left;
+        margin-left: 20px;
+        width: 60px;
+        height: 30px;
+        line-height: 30px;
+        text-align: center;
+        color: $white;
+        font-size: 12px;
+        background-color: $primary-color;
+        border-radius: 3px;
+        cursor: pointer;
     }
     $month-selector-width: 200px;
     $month-selector-height: 30px;
