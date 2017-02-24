@@ -180,5 +180,13 @@ export default {
             }
         }
         return viewModel;
+    },
+    getStartAndEndOfMonth(year, month) {
+        let start = new Date(year, month - 1, 1);
+        let end = new Date(year, month - 1, this.getMaxDayOfMonth(year, month));
+        return {
+            start: start.getTime(),
+            end: end.getTime()
+        };
     }
 };
