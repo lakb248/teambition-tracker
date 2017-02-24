@@ -16,7 +16,7 @@
                 <i class="fui-arrow-right" @click="nextMonth()"></i>
             </div>
         </div>
-        <activity-calendar :month="month" :year="year"></activity-calendar>
+        <activity-calendar :month="month" :year="year" :activity="activity"></activity-calendar>
     </div>
 </template>
 
@@ -24,7 +24,8 @@
 import EventEmitter from '../utils/event';
 import CalendarUtil from '../utils/calendar-util';
 import ActivityCalendar from '../components/activity-calendar.vue';
-
+import ActivityService from '../services/activity';
+let activityService = null;
 export default {
     components: {
         'activity-calendar': ActivityCalendar
@@ -33,11 +34,9 @@ export default {
         return {
             calendarType: 'month',
             month: new Date().getMonth() + 1,
-            year: new Date().getFullYear()
+            year: new Date().getFullYear(),
+            activity: []
         };
-    },
-    mounted() {
-        EventEmitter.emit('loading-hide');
     },
     methods: {
         calendarTypeChange(type = 'week') {
@@ -58,6 +57,28 @@ export default {
             this.month = now.getMonth() + 1;
             this.year = now.getFullYear();
         }
+    },
+    watch: {
+        year(val) {
+            activityService.getByMonth(val, this.month)
+                .then(res => {
+                    this.activity = res;
+                });
+        },
+        month(val) {
+            activityService.getByMonth(this.year, val)
+                .then(res => {
+                    this.activity = res;
+                });
+        }
+    },
+    mounted() {
+        EventEmitter.emit('loading-hide');
+        activityService = new ActivityService();
+        activityService.getByMonth(this.year, this.month)
+            .then(res => {
+                this.activity = res;
+            });
     }
 };
 </script>

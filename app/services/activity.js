@@ -2,6 +2,7 @@ import AVActivity from '../leancloud/activity';
 import Logger from '../utils/logger';
 import AV from '../leancloud/leancloud';
 import {setAvObjectByPlainObject, getObjectByKeyValue, getObjectFromAVRes} from '../utils/util';
+import CalnedarUtil from '../utils/calendar-util';
 import EventEmitter from '../utils/event';
 
 import Cache from '../utils/cache';
@@ -60,6 +61,23 @@ class Activity {
                     return res;
                 }
                 return res;
+            });
+    }
+    getByMonth(year, month) {
+        let range = CalnedarUtil.getStartAndEndOfMonth(year, month);
+        let start = range.start;
+        let end = range.end;
+        console.log(range);
+        return this.all()
+            .then(data => {
+                console.log(data);
+                let result = [];
+                data.forEach(activity => {
+                    if (activity.start >= start && activity.start < end) {
+                        result.push(activity);
+                    }
+                });
+                return result;
             });
     }
 }

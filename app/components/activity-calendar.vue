@@ -13,6 +13,8 @@
             <div class="calendar-view--week" :class="{'six': calendar.length > 5}" v-for="week in calendar">
                 <div class="calendar-view--day" :class="{'weekend': index === 0 || index === 6}" v-for="(day, index) in week">
                     <span class="day-number" :class="{'today': isToday(day.date)}">{{day.date}}</span>
+                    <div class="activity-percentage"
+                        :style="{'height': getPercentageOfDay(getActivityDurationOfDay(day.date)) * 100 + '%'}"></div>
                 </div>
             </div>
         </div>
@@ -21,6 +23,30 @@
 
 <script>
 import CalendarUtil from '../utils/calendar-util.js';
+import {MILLISECONDS_PER_DAY} from '../utils/date-util.js';
+let splitActivityByDate = (activity, year, month) => {
+    let activityByDate = {};
+    activity.forEach(item => {
+        let start = String(new Date(item.start).getDate());
+        let end = String(new Date(item.end).getDate());
+        item.duration = item.end - item.start;
+        activityByDate[start] = activityByDate[start] || {
+            activity: [],
+            duration: 0
+        };
+        activityByDate[start].activity.push(item);
+        activityByDate[start].duration += item.duration;
+        if (start !== end) {
+            activityByDate[end] = activityByDate[end] || {
+                activity: [],
+                duration: 0
+            };
+            activityByDate[end].activity.push(item);
+            activityByDate[end].duration += item.duration;
+        }
+    });
+    return activityByDate;
+};
 export default {
     props: {
         type: {
@@ -34,6 +60,10 @@ export default {
         year: {
             type: Number,
             default: new Date().getFullYear()
+        },
+        activity: {
+            type: Array,
+            default: []
         }
     },
     watch: {
@@ -42,11 +72,15 @@ export default {
         },
         year(val) {
             this.calendar = CalendarUtil.getCalendarViewModel(val, this.month, 'normal');
+        },
+        activity(val) {
+            this.activityByDate = splitActivityByDate(val, this.year, this.month);
         }
     },
     data() {
         return {
-            calendar: []
+            calendar: [],
+            activityByDate: {}
         };
     },
     methods: {
@@ -55,10 +89,20 @@ export default {
             return now.getFullYear() === this.year &&
                 (now.getMonth() + 1) === this.month &&
                 now.getDate() === date;
+        },
+        getPercentageOfDay(duration) {
+            return duration / MILLISECONDS_PER_DAY;
+        },
+        getActivityDurationOfDay(day) {
+            if (this.activityByDate[day]) {
+                return this.activityByDate[day].duration;
+            }
+            return 0;
         }
     },
     mounted() {
         this.calendar = CalendarUtil.getCalendarViewModel(this.year, this.month, 'normal');
+        this.activityByDate = splitActivityByDate(this.activity, this.year, this.month);
     }
 };
 </script>
@@ -107,6 +151,7 @@ export default {
             }
         }
         &--day {
+            position: relative;
             float: left;
             width: 14.286%;
             height: 100%;
@@ -132,5 +177,12 @@ export default {
             border-radius: 50%;
             color: $white;
         }
+    }
+    .activity-percentage {
+        position: absolute;
+        left: 0px;
+        bottom: 0px;
+        right: 0px;
+        background-color: $primary-color-hover;
     }
 </style>
