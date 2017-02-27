@@ -10,6 +10,7 @@ let getStartOfDay = date => {
     date.setMilliseconds(0);
     return date.getTime();
 };
+
 let getEndOfDay = date => {
     return getStartOfDay(date) + MILLISECONDS_PER_DAY - 1;
 };

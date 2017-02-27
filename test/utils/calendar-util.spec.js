@@ -71,3 +71,15 @@ describe('utils/calendar-util.js === getNextMonth', () => {
         });
     });
 });
+
+// getStartAndEndOfMonth
+describe('utils/calednar-util.js === getStartAndEndOfMonth', () => {
+    it('the start of 2017.01 should be 2017.01.01 00:00:00', () => {
+        expect(Calendar.getStartAndEndOfMonth(2017, 1).start)
+            .toEqual(new Date(2017, 0, 1, 0, 0, 0).getTime());
+    });
+    it('the end of 2017.01 should be 2017.01.31 23:59:59.9999', () => {
+        expect(Calendar.getStartAndEndOfMonth(2017, 1).end)
+            .toEqual(new Date(2017, 0, 31, 23, 59, 59, 999).getTime());
+    });
+});

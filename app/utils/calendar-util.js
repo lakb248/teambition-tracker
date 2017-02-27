@@ -183,7 +183,7 @@ export default {
     },
     getStartAndEndOfMonth(year, month) {
         let start = new Date(year, month - 1, 1);
-        let end = new Date(year, month - 1, this.getMaxDayOfMonth(year, month));
+        let end = new Date(year, month - 1, this.getMaxDayOfMonth(year, month), 23, 59, 59, 999);
         return {
             start: start.getTime(),
             end: end.getTime()
