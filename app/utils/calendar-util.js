@@ -140,35 +140,13 @@ export default {
             }
             // blank before the month
             if (i < firstDayOfMonth + 1) {
-                if (!isSimple) {
-                    week.push({
-                        type: 'blank',
-                        day: WEEK_DAY[(i - 1) % 7]
-                    });
-                } else {
-                    week.push(0);
-                }
+                this._pushDayToWeek(week, 'blank', 0, WEEK_DAY[(i - 1) % 7], isSimple);
             } else if (index <= daysOfMonth) {
-                if (!isSimple) {
-                    week.push({
-                        type: 'normal',
-                        date: index,
-                        day: WEEK_DAY[(i - 1) % 7]
-                    });
-                } else {
-                    week.push(index);
-                }
+                this._pushDayToWeek(week, 'normal', index, WEEK_DAY[(i - 1) % 7], isSimple);
                 index++;
             } else {
                 // blank after the month
-                if (!isSimple) {
-                    week.push({
-                        type: 'blank',
-                        day: WEEK_DAY[(i - 1) % 7]
-                    });
-                } else {
-                    week.push(0);
-                }
+                this._pushDayToWeek(week, 'blank', 0, WEEK_DAY[(i - 1) % 7], isSimple);
             }
             // the last day of one week
             if (i % 7 === 0) {
@@ -180,6 +158,21 @@ export default {
             }
         }
         return viewModel;
+    },
+    _pushDayToWeek(week, type, date, weekday, isSimple) {
+        if (isSimple) {
+            week.push(date);
+        } else {
+            let day = {
+                type: type,
+                day: weekday
+            };
+            if (type === 'normal') {
+                day.date = date;
+            }
+            week.push(day);
+        }
+        return week;
     },
     getStartAndEndOfMonth(year, month) {
         let start = new Date(year, month - 1, 1);
