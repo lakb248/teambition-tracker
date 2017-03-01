@@ -180,23 +180,19 @@ export default {
         });
         let allProjects = projectService.all();
         let allTasks = taskService.all();
-
-        // assemble data
-        this.axios.all([allProjects, allTasks])
-            .then(this.axios.spread(
-                (
-                projects: Object,
-                tasks: Object
-                ): void => {
-                    this.projects = projects;
-                    this.tasks = tasks;
-                    let pTask = getTaskByStatus(tasks, TASK_STATUS.PLAYING);
-                    if (pTask != null) {
-                        // start task on init
-                        startTask(pTask, new Date() - pTask.lastStartTime);
-                    }
-                    EventEmitter.emit('loading-hide');
-                }));
+        allProjects.combineLatest(allTasks)
+            .subscribe(res => {
+                let projects = res[0];
+                let tasks = res[1];
+                this.projects = projects;
+                this.tasks = tasks;
+                let pTask = getTaskByStatus(tasks, TASK_STATUS.PLAYING);
+                if (pTask != null) {
+                    // start task on init
+                    startTask(pTask, new Date() - pTask.lastStartTime);
+                }
+                EventEmitter.emit('loading-hide');
+            });
     }
 };
 

@@ -6,6 +6,10 @@ import ActivityService from './activity';
 import SubtaskService from './subtask';
 import EventEmitter from '../utils/event';
 
+// import {Observable} from 'rxjs/Observable';
+// import 'rxjs/add/observable/fromPromise';
+import Rx from 'rxjs';
+
 import {
     arrayToObject,
     setAvObjectByPlainObject,
@@ -37,8 +41,9 @@ class Task {
         this._axios = axios;
     }
     all() {
+        let resPromise = null;
         if (Cache.get('tasks')) {
-            return Promise.resolve(Cache.get('tasks'));
+            resPromise = Promise.resolve(Cache.get('tasks'));
         }
         let tbTaskReq = this._tbTask.me();
         let tbSubTaskReq = this._subtaskService.me();
@@ -47,7 +52,7 @@ class Task {
         let avTaskReq = this._allAVTask();
         let avActivityReq = this._activityService.all();
 
-        return this._axios.all([tbTaskReq, tbMembersReq, tbSubTaskReq, avTaskReq, avActivityReq])
+        resPromise = this._axios.all([tbTaskReq, tbMembersReq, tbSubTaskReq, avTaskReq, avActivityReq])
             .then(this._axios.spread((tbTaskRes, tbMemberRes, tbSubTaskRes, avTaskRes, avActivityReq) => {
                 let tbTasks = tbTaskRes.data;
                 let tbMembers = tbMemberRes.data;
@@ -69,6 +74,7 @@ class Task {
                 Cache.set('tasks', res);
                 return res;
             }));
+        return Rx.Observable.fromPromise(resPromise);
     }
     save(task) {
         let result = null;
