@@ -159,18 +159,26 @@ export default {
         }
         return viewModel;
     },
+
+    /**
+     * push one day into the week array
+     * @param  {Array} week the week array
+     * @param  {String} type the type of day
+     * @param  {Integer} date the date of the day
+     * @param {String} weekday the weekday of the day
+     * @param {Boolean} isSimple whether the data type is simple
+     * @return {Array} the week array
+     */
     _pushDayToWeek(week, type, date, weekday, isSimple) {
         if (isSimple) {
             week.push(date);
         } else {
-            let day = {
+            let item = {
                 type: type,
+                date: type === 'normal' ? date : undefined,
                 day: weekday
             };
-            if (type === 'normal') {
-                day.date = date;
-            }
-            week.push(day);
+            week.push(item);
         }
         return week;
     },
