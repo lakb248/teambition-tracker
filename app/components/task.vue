@@ -9,7 +9,7 @@
                 ></i>
         <div class="task-card--main">
             <div class="task-card--line">
-                <div class="task-card--content">
+                <div class="task-card--content" @dblclick="editTaskTitle($event)" :contenteditable="isTitleEditable" @blur="saveTaskTitle($event)">
                     {{task.content}}
                 </div>
                 <div class="task-card--member">
@@ -50,6 +50,17 @@ import {TASK_STATUS as STATUS} from '../utils/const.js';
 import {millisecondsToObject} from '../utils/util';
 import SubTask from './subtask.vue';
 
+/* global window, document */
+let setRangeFromPoint = document.caretPositionFromPoint ?
+    document.caretPositionFromPoint.bind(document) : document.caretRangeFromPoint.bind(document);
+let setCursorToEnd = event => {
+    let rect = event.target.getBoundingClientRect();
+    let range = setRangeFromPoint(rect.left + rect.width, event.clientY);
+    let sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+};
+
 export default {
     props: ['task'],
     components: {
@@ -57,7 +68,8 @@ export default {
     },
     data() {
         return {
-            isSubtaskShow: false
+            isSubtaskShow: false,
+            isTitleEditable: false
         };
     },
     computed: {
@@ -94,6 +106,15 @@ export default {
         onDoneStatusChange(event) {
             event.type = 'subtask';
             this.$emit('done-status-change', event);
+        },
+        editTaskTitle(e) {
+            this.isTitleEditable = true;
+            setTimeout(() => {
+                setCursorToEnd(e);
+            }, 1);
+        },
+        saveTaskTitle(e) {
+            this.isTitleEditable = false;
         }
     }
 };
@@ -143,6 +164,9 @@ export default {
         &--content {
             float: left;
             font-size: 14px;
+            &:focus {
+                outline: none;
+            }
         }
         &--member {
             float: right;
