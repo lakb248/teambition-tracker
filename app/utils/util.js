@@ -80,11 +80,31 @@ let getObjectFromAVRes = (avRes, base = {}) => {
     base.objectId = avRes.id;
     return base;
 };
+let clone = (base, deep = true) => {
+    if (!base) {
+        return;
+    }
+    let result = {};
+    if (isArray(base)) {
+        result = [];
+    }
+    for (let key in base) {
+        if (base.hasOwnProperty(key)) {
+            if (typeof base[key] === 'object') {
+                result[key] = clone(base[key]);
+            } else {
+                result[key] = base[key];
+            }
+        }
+    }
+    return result;
+};
 export {
     isArray,
     arrayToObject,
     getObjectByKeyValue,
     setAvObjectByPlainObject,
     millisecondsToObject,
-    getObjectFromAVRes
+    getObjectFromAVRes,
+    clone
 };
