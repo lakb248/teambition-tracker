@@ -70,7 +70,7 @@ let millisecondsToObject = milliseconds => {
         seconds: (seconds >= 10 ? seconds : ('0' + seconds))
     };
 };
-let updateObjectFromAVRes = (avRes, base = {}) => {
+let getObjectFromAVRes = (avRes, base = {}) => {
     let attributes = avRes.attributes;
     for (var key in attributes) {
         if (attributes.hasOwnProperty(key)) {
@@ -80,7 +80,10 @@ let updateObjectFromAVRes = (avRes, base = {}) => {
     base.objectId = avRes.id;
     return base;
 };
-let clone = (base = {}, deep = true) => {
+let clone = (base, deep = true) => {
+    if (!base) {
+        return;
+    }
     let result = {};
     if (isArray(base)) {
         result = [];
@@ -88,14 +91,7 @@ let clone = (base = {}, deep = true) => {
     for (let key in base) {
         if (base.hasOwnProperty(key)) {
             if (typeof base[key] === 'object') {
-                if (isArray(base[key])) {
-                    result[key] = [];
-                    base[key].forEach(item => {
-                        result[key].push(clone(item));
-                    });
-                } else {
-                    result[key] = clone(base[key]);
-                }
+                result[key] = clone(base[key]);
             } else {
                 result[key] = base[key];
             }
@@ -109,6 +105,6 @@ export {
     getObjectByKeyValue,
     setAvObjectByPlainObject,
     millisecondsToObject,
-    updateObjectFromAVRes,
+    getObjectFromAVRes,
     clone
 };
