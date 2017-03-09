@@ -1,10 +1,10 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import VueAxios from './utils/vue-axios';
 import {getToken, checkToken, refreshToken} from './utils/authorize';
 import config from './utils/config';
 import UserService from './services/user';
 import EventEmitter from './utils/event';
+import Fetch from './fetch/fetch';
 
 import Index from './views/index.vue';
 
@@ -59,11 +59,7 @@ if (token === '') {
     checkToken(token)
         .then(success => {
             if (success) {
-                // init axios object, then attach to vue instance
-                Vue.use(VueAxios, {
-                    apiUrl: config.apiUrl,
-                    token: token
-                });
+                Fetch.init(token, config.apiUrl);
                 App.$mount('.wrap');
                 let userService = new UserService(App.request);
                 userService.me()
