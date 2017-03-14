@@ -1,8 +1,7 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 import {getToken, checkToken, refreshToken} from './utils/authorize';
-import config from './utils/config';
-import UserService from './services/user';
+import UserAPI from './api/user-api';
 import EventEmitter from './utils/event';
 import Fetch from './fetch/fetch';
 
@@ -59,13 +58,12 @@ if (token === '') {
     checkToken(token)
         .then(success => {
             if (success) {
-                Fetch.init(token, config.apiUrl);
-                App.$mount('.wrap');
-                let userService = new UserService(App.request);
-                userService.me()
-                    .then(res => {
+                Fetch.setToken(token);
+                UserAPI.me()
+                    .subscribe(res => {
                         App.me = res;
                         App._userId = res._id;
+                        App.$mount('.wrap');
                     });
             } else {
                 refreshToken();

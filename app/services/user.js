@@ -1,4 +1,4 @@
-import TBUser from '../teambition/user';
+import TBUser from '../fetch/teambition/user';
 import Cache from '../utils/cache';
 
 class User {
