@@ -99,6 +99,18 @@ let clone = (base, deep = true) => {
     }
     return result;
 };
+let patchApply = (data, patch) => {
+    if (!data || typeof data !== 'object') {
+        return null;
+    }
+    if (!patch || typeof patch !== 'object') {
+        return data;
+    }
+    Object.keys(patch).forEach(key => {
+        data[key] = patch[key];
+    });
+    return data;
+};
 export {
     isArray,
     arrayToObject,
@@ -106,5 +118,6 @@ export {
     setAvObjectByPlainObject,
     millisecondsToObject,
     getObjectFromAVRes,
-    clone
+    clone,
+    patchApply
 };
