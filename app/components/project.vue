@@ -6,6 +6,7 @@
             <p class="project-overview--createtime">{{project.created}}</p>
             <p class="project-overview--createtime">04:23 h</p>
         </div>
+        <i class="fui-eye project-card--more" @click.stop="onProjectDetail(project._id)"></i>
     </div>
 </template>
 
@@ -16,8 +17,11 @@ export default {
         return {};
     },
     methods: {
-        onProjectClick(projectId: Number): void {
+        onProjectClick(projectId) {
             this.$emit('project-selected', projectId);
+        },
+        onProjectDetail(projectId) {
+            this.$emit('project-show', projectId);
         }
     }
 };
@@ -33,10 +37,13 @@ export default {
         &--more {
             position: absolute;
             right: 5px;
-            bottom: 5px;
-            width: 10px;
-            height: 30px;
-            border: 1px solid black;
+            top: 5px;
+            width: 20px;
+            height: 20px;
+            color: $gray;
+            &:hover {
+                color: $primary-color-hover;
+            }
         }
     }
 
