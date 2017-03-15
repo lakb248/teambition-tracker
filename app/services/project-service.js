@@ -6,7 +6,7 @@ import Logger from '../utils/logger';
 let logger = new Logger('[services/project-service]');
 
 class ProjectService {
-    all() {
+    getList() {
         logger.log('get project list');
         return ProjectAPI.getList()
             .map(projectList => projectList.map(this._filterProjectProperty));

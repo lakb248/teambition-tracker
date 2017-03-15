@@ -12,7 +12,7 @@ class ProjectAPI {
         if (cache) {
             return cache;
         }
-        logger.log('try to get project list from teambition');
+        logger.log('try to get project list from server');
         return ProjectFetch.getList()
             .concatMap(projectList => ProjectModel.addList(projectList));
     }
@@ -22,7 +22,7 @@ class ProjectAPI {
         if (cache) {
             return cache;
         }
-        logger.log(`try to get project ${projectId} from teambition`);
+        logger.log(`try to get project ${projectId} from server`);
         return ProjectFetch.getOne(projectId)
             .concatMap(project => ProjectModel.addOne(project));
     }

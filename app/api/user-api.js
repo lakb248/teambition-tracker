@@ -11,17 +11,17 @@ class UserAPI {
         if (cache) {
             return cache.get();
         }
-        logger.log('try to get me from teambition');
+        logger.log('try to get me from server');
         return UserFetch.me().concatMap(me => UserModel.addMe(me));
     }
-    members() {
+    getMembers() {
         logger.log('try to get members from cache');
-        let cache = UserModel.members();
+        let cache = UserModel.getMembers();
         if (cache) {
             return cache.get();
         }
-        logger.log('try to get members from teambition');
-        return UserFetch.members().concatMap(members => UserModel.addMembers(members));
+        logger.log('try to get members from server');
+        return UserFetch.getMembers().concatMap(members => UserModel.addMembers(members));
     }
 }
 

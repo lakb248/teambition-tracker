@@ -14,7 +14,7 @@ class UserModel {
         }
         return null;
     }
-    members() {
+    getMembers() {
         let members = Cache.get('members');
         if (members) {
             logger.log('get members from cache');

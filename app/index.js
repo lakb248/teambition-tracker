@@ -4,12 +4,15 @@ import {getToken, checkToken, refreshToken} from './utils/authorize';
 import UserAPI from './api/user-api';
 import EventEmitter from './utils/event';
 import Fetch from './fetch/fetch';
+import Logger from './utils/logger';
+import 'rxjs/add/operator/first';
 
 import Index from './views/index.vue';
 
 require('./styles/index.scss');
 
 Vue.use(Router);
+let logger = new Logger('[index]');
 
 EventEmitter.on('loading-show', () => {
     /* global document */
@@ -60,9 +63,12 @@ if (token === '') {
             if (success) {
                 Fetch.setToken(token);
                 UserAPI.me()
-                    .subscribe(res => {
+                    .map(res => {
                         App.me = res;
                         App._userId = res._id;
+                        return null;
+                    }).first().subscribe(() => {
+                        logger.log('app mounted');
                         App.$mount('.wrap');
                     });
             } else {
