@@ -1,6 +1,6 @@
-import AVActivity from '../leancloud/activity';
+import AVActivity from '../fetch/leancloud/activity';
 import Logger from '../utils/logger';
-import AV from '../leancloud/leancloud';
+import AV from '../fetch/leancloud/leancloud';
 import {setAvObjectByPlainObject, getObjectByKeyValue, getObjectFromAVRes} from '../utils/util';
 import CalnedarUtil from '../utils/calendar-util';
 import EventEmitter from '../utils/event';

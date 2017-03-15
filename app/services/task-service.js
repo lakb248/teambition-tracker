@@ -1,3 +1,101 @@
+import TaskAPI from '../api/task-api';
+import UserAPI from '../api/user-api';
+import ActivityAPI from '../api/activity-api';
+import Logger from '../utils/logger';
+import {arrayToObject} from '../utils/util';
+import {Observable} from 'rxjs/Observable';
+import 'rxjs/add/observable/combineLatest';
+import fecha from 'fecha';
+import {MILLISECONDS, DUEDATE_TYPE} from '../utils/const.js';
+
+let logger = new Logger('[service/task-service]');
+
+class TaskService {
+    getList() {
+        logger.log('get task list');
+        return Observable.combineLatest(
+            TaskAPI.getList(),
+            UserAPI.getMembers(),
+            ActivityAPI.getList()
+        ).map(res => this._generateTaskList(res));
+    }
+    _generateTaskList([tasks, members, activityList]) {
+        members = arrayToObject(members, '_id');
+        activityList = arrayToObject(activityList, 'taskId', true);
+        return tasks.map(task => this._generateTask(task, members, activityList[task._id]));
+    }
+    _generateTask(task, members, activityList) {
+        let involveMembers = [];
+        task.involveMembers.forEach(memberId => {
+            involveMembers.push(members[memberId]);
+        });
+        return {
+            _id: task._id,
+            objectId: task.objectId,
+            projectId: task._projectId,
+            content: task.content,
+            // subtasks: subtasks,
+            subtasks: [],
+            dueDate: this._dueDateBeautify(task.dueDate),
+            created: task.created,
+            // subtaskCount: subtaskCount,
+            subtaskCount: {
+                done: 0,
+                total: 0
+            },
+            priority: task.priority,
+            involveMembers: involveMembers,
+            activity: activityList,
+            cost: this._getCostFromActivity(activityList),
+            status: task.status,
+            lastStartTime: task.lastStartTime,
+            timer: task.timer
+        };
+    }
+    _getCostFromActivity(activity) {
+        activity = activity || [];
+        let cost = 0;
+        activity.forEach(activity => {
+            cost += activity.end - activity.start;
+        });
+        return cost;
+    }
+    _dueDateBeautify(dueDate) {
+        if (!dueDate || dueDate == null) {
+            return {
+                label: '',
+                type: ''
+            };
+        }
+
+        dueDate = new Date(dueDate);
+        let now = new Date();
+        let nowTimestamps = now.getTime();
+        let dueDateTimestamps = dueDate.getTime();
+        let type = '';
+
+        let delta = dueDateTimestamps - nowTimestamps;
+
+        if (delta < 0) {
+            // has past
+            type = DUEDATE_TYPE.DANGER;
+        } else if (delta < MILLISECONDS.MILLISECONDS_PER_DAY) {
+            // at the dueDate
+            type = DUEDATE_TYPE.WARNING;
+        } else if (delta < MILLISECONDS.MILLISECONDS_PER_WEEK) {
+            // in one week
+            type = DUEDATE_TYPE.NORMAL;
+        }
+        return {
+            label: fecha.format(dueDate, 'YYYY-MM-DD'),
+            type: type
+        };
+    }
+}
+
+export default new TaskService();
+
+/*
 import TBTask from '../teambition/task';
 import TBUser from '../teambition/user';
 import AV from '../leancloud/leancloud';
@@ -247,3 +345,4 @@ class Task {
 }
 
 export default Task;
+*/

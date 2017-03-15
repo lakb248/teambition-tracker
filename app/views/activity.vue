@@ -24,7 +24,7 @@
 import EventEmitter from '../utils/event';
 import CalendarUtil from '../utils/calendar-util';
 import ActivityCalendar from '../components/activity-calendar.vue';
-import ActivityService from '../services/activity';
+import ActivityService from '../services/activity-service';
 let activityService = null;
 export default {
     components: {
