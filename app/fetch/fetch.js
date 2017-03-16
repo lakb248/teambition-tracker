@@ -36,10 +36,24 @@ class Fetch {
         );
     }
     post(path, data) {
-        return Observable.fromPromise(this._http.post({
-            url: path,
-            data: data
-        }));
+        return Observable.fromPromise(
+            this._http.post(path, data)
+                .then(res => {
+                    if (res.status === 200) {
+                        return res.data;
+                    }
+                })
+        );
+    }
+    put(path, data) {
+        return Observable.fromPromise(
+            this._http.put(path, data)
+                .then(res => {
+                    if (res.status === 200) {
+                        return res.data;
+                    }
+                })
+        );
     }
     _queryToParams(query) {}
 }
