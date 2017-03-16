@@ -25,7 +25,6 @@ import EventEmitter from '../utils/event';
 import CalendarUtil from '../utils/calendar-util';
 import ActivityCalendar from '../components/activity-calendar.vue';
 import ActivityService from '../services/activity-service';
-let activityService = null;
 export default {
     components: {
         'activity-calendar': ActivityCalendar
@@ -60,23 +59,22 @@ export default {
     },
     watch: {
         year(val) {
-            activityService.getByMonth(val, this.month)
-                .then(res => {
+            ActivityService.getByMonth(val, this.month)
+                .subscribe(res => {
                     this.activity = res;
                 });
         },
         month(val) {
-            activityService.getByMonth(this.year, val)
-                .then(res => {
+            ActivityService.getByMonth(this.year, val)
+                .subscribe(res => {
                     this.activity = res;
                 });
         }
     },
     mounted() {
         EventEmitter.emit('loading-hide');
-        activityService = new ActivityService();
-        activityService.getByMonth(this.year, this.month)
-            .then(res => {
+        ActivityService.getByMonth(this.year, this.month)
+            .subscribe(res => {
                 this.activity = res;
             });
     }

@@ -23,5 +23,10 @@ class ActvityAPI {
         logger.log('try to get activity list from server');
         return ActivityFetch.getList().concatMap(list => ActivityModel.addList(list));
     }
+    addOne(data) {
+        logger.log('try to add a new activity to server');
+        return ActivityFetch.addOne(data).concatMap(activity => ActivityModel.addOne(activity).take(1));
+    }
+    updateOne(id, data) {}
 }
 export default new ActvityAPI();

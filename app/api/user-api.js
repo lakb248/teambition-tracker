@@ -9,7 +9,7 @@ class UserAPI {
         logger.log('try to get me from cache');
         let cache = UserModel.me();
         if (cache) {
-            return cache.get();
+            return cache;
         }
         logger.log('try to get me from server');
         return UserFetch.me().concatMap(me => UserModel.addMe(me));
@@ -18,7 +18,7 @@ class UserAPI {
         logger.log('try to get members from cache');
         let cache = UserModel.getMembers();
         if (cache) {
-            return cache.get();
+            return cache;
         }
         logger.log('try to get members from server');
         return UserFetch.getMembers().concatMap(members => UserModel.addMembers(members));

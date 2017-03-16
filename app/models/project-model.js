@@ -21,7 +21,7 @@ class ProjectModel {
     addList(data, unionFlag = '_id') {
         logger.log('add project list to cache');
         let model = new Model(data, true);
-        Cache.set('project:list', data);
+        Cache.set('project:list', model);
         data.forEach(item => {
             let flag = `project:${item[unionFlag]}`;
             let cache = Cache.get(flag);

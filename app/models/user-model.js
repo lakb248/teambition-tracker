@@ -20,6 +20,7 @@ class UserModel {
             logger.log('get members from cache');
             return members.get();
         }
+        return null;
     }
     addMe(data) {
         logger.log('add me to cache');

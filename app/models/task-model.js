@@ -38,7 +38,7 @@ class TaskModel {
     addList(data, unionFlag = '_id') {
         logger.log('add task list to cache');
         let model = new Model(data, true);
-        Cache.set('task:list', data);
+        Cache.set('task:list', model);
         data.forEach(item => {
             let flag = `task:${item[unionFlag]}`;
             let cache = Cache.get(flag);
@@ -50,6 +50,12 @@ class TaskModel {
             }
         });
         return model.get();
+    }
+    updateOne(id, patch) {
+        logger.log(`update task ${id} in cache`);
+        let task = Cache.get(`task:${id}`);
+        task.update(patch);
+        return task.get();
     }
 }
 

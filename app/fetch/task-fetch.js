@@ -1,11 +1,12 @@
 import TBTask from './teambition/task';
 import AVTask from './leancloud/task';
-import {Observable} from 'rxjs/Observable';
-import 'rxjs/add/observable/forkJoin';
-import Logger from '../utils/logger';
 import {arrayToObject} from '../utils/util';
 import {TASK_STATUS as STATUS} from '../utils/const.js';
 
+import {Observable} from 'rxjs/Observable';
+import 'rxjs/add/observable/forkJoin';
+
+import Logger from '../utils/logger';
 let logger = new Logger('[fetch/task-fetch]');
 
 class TaskFetch {
@@ -25,7 +26,28 @@ class TaskFetch {
             this._mergeTaskList.bind(this)
         );
     }
-    update() {}
+    updateOne(id, patch) {
+        if (patch.objectId) {
+            return AVTask.updateOne(patch.objectId, patch);
+        }
+        return AVTask.addOne({
+            taskId: id,
+            lastStartTime: patch.lastStartTime,
+            status: patch.status
+        });
+    }
+    updateStatus(id, data) {
+        logger.log(`update status of task ${id} to ${data.status} in server`);
+        if (data.objectId) {
+            return AVTask.updateOne(data.objectId, data);
+        }
+        return AVTask.addOne({
+            taskId: id,
+            lastStartTime: data.lastStartTime,
+            status: data.status
+        });
+    }
+    updateContent(id, content) {}
     remove() {}
     _mergeTaskList(tbTasks, avTasks) {
         avTasks = arrayToObject(avTasks, 'taskId');
@@ -43,7 +65,7 @@ class TaskFetch {
         if (status === STATUS.PLAYING) {
             timer = new Date().getTime() - lastStartTime;
         }
-        tbTask.objectId = avTask ? avTask.id : undefined;
+        tbTask.objectId = avTask ? avTask.objectId : undefined;
         tbTask.status = status;
         tbTask.lastStartTime = lastStartTime;
         tbTask.timer = timer;

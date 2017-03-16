@@ -25,12 +25,15 @@ class Task {
     addOne(data) {
         logger.log(`add a new task to leancloud`);
         let task = this._createAVTask(data);
-        return Observable.fromPromise(task.save());
+        return Observable.fromPromise(task.save())
+            .map(task => getObjectFromAVRes(task));
     }
     updateOne(id, patch) {
+        logger.log(`update task ${id} in leancloud`);
         let updatedTask = AV.Object.createWithoutData('AVTask', id);
         updatedTask = this._updateAVTask(updatedTask, patch);
-        return Observable.fromPromise(updatedTask.save());
+        return Observable.fromPromise(updatedTask.save())
+            .map(task => getObjectFromAVRes(task));
     }
     _createAVTask(data = {}) {
         let task = new AVTask();
@@ -40,11 +43,8 @@ class Task {
         return task;
     }
     _updateAVTask(task, patch = {}) {
-        Object.keys(patch).forEach(key => {
-            if (key !== 'objectId') {
-                task.set(key, patch[key]);
-            }
-        });
+        task.set('status', patch.status || task.status);
+        task.set('lastStartTime', patch.lastStartTime || task.lastStartTime);
         return task;
     }
 }

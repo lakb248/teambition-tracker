@@ -70,6 +70,7 @@ if (token === '') {
                     }).first().subscribe(() => {
                         logger.log('app mounted');
                         App.$mount('.wrap');
+                        EventEmitter.emit('loading-hide');
                     });
             } else {
                 refreshToken();

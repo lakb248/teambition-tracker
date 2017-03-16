@@ -27,7 +27,16 @@ class TaskAPI {
     addList(data) {}
     updateOne(id, patch) {
         return TaskFetch.updateOne(id, patch)
-            .concatMap(task => TaskModel.updateOne(id, task));
+            .concatMap(task => TaskModel.updateOne(id, task).take(1));
+    }
+    updateStatus(id, data) {
+        logger.log(`try to update status of task ${id} to ${data.status}`);
+        return TaskFetch.updateStatus(id, data)
+            .concatMap(task => TaskModel.updateOne(id, task).take(1));
+    }
+    updateContent(id, content) {
+        return TaskFetch.updateContent(id, content)
+            .concatMap(task => TaskModel.updateOne(id, task).take(1));
     }
 }
 
