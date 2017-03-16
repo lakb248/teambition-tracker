@@ -1,4 +1,5 @@
 import TaskAPI from '../api/task-api';
+import SubtaskAPI from '../api/subtask-api';
 import UserAPI from '../api/user-api';
 import ActivityAPI from '../api/activity-api';
 import {arrayToObject} from '../utils/util';
@@ -18,19 +19,21 @@ class TaskService {
         return Observable.combineLatest(
             TaskAPI.getList(),
             UserAPI.getMembers(),
-            ActivityAPI.getList()
+            ActivityAPI.getList(),
+            SubtaskAPI.getList()
         ).map(res => this._generateTaskList(res));
     }
     updateStatus(id, task) {
         logger.log(`update status of task ${id} to ${task.status}`);
         return TaskAPI.updateStatus(id, task).take(1);
     }
-    _generateTaskList([tasks, members, activityList]) {
+    _generateTaskList([tasks, members, activityList, subtaskList]) {
         members = arrayToObject(members, '_id');
         activityList = arrayToObject(activityList, 'taskId', true);
-        return tasks.map(task => this._generateTask(task, members, activityList[task._id]));
+        subtaskList = arrayToObject(subtaskList, '_taskId', true);
+        return tasks.map(task => this._generateTask(task, members, activityList[task._id], subtaskList[task._id]));
     }
-    _generateTask(task, members, activityList) {
+    _generateTask(task, members, activityList, subtaskList) {
         let involveMembers = [];
         task.involveMembers.forEach(memberId => {
             involveMembers.push(members[memberId]);
@@ -40,15 +43,10 @@ class TaskService {
             objectId: task.objectId,
             projectId: task._projectId,
             content: task.content,
-            // subtasks: subtasks,
-            subtasks: [],
+            subtasks: subtaskList,
             dueDate: this._dueDateBeautify(task.dueDate),
             created: task.created,
-            // subtaskCount: subtaskCount,
-            subtaskCount: {
-                done: 0,
-                total: 0
-            },
+            subtaskCount: this._getSubtasksCount(subtaskList),
             priority: task.priority,
             involveMembers: involveMembers,
             activity: activityList,

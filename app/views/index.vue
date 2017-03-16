@@ -24,6 +24,7 @@
 <script>
 import ProjectService from '../services/project-service';
 import TaskService from '../services/task-service';
+import SubtaskService from '../services/subtask-service';
 import ActivityService from '../services/activity-service';
 import ProjectOverview from '../components/project.vue';
 import TaskCard from '../components/task.vue';
@@ -173,13 +174,13 @@ export default {
             }
         },
         onDoneStatusChange(event) {
-        //     logger.log(`set done status of subtask ${event.id} to ${event.isDone}`);
-        //     if (event.type === 'subtask') {
-        //         subtaskService.save({
-        //             _id: event.id,
-        //             isDone: event.isDone
-        //         });
-        //     }
+            logger.log(`set done status of subtask ${event.id} to ${event.isDone}`);
+            if (event.type === 'subtask') {
+                SubtaskService.updateStatus(event.id, event.isDone)
+                    .subscribe(res => {
+                        logger.log('done status change success!!!');
+                    });
+            }
         }
     },
     mounted() {

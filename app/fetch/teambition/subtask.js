@@ -1,27 +1,20 @@
-import Model from './model';
+import Fetch from '../fetch';
+import Logger from '../../utils/logger';
+let logger = new Logger('[fetch/teambition/subtask]');
 
-class TBSubTask extends Model {
-    getOne(taskId) {
-        return this._http.request({
-            url: '/subtasks?_taskId=' + taskId
-        });
+class TBSubTask {
+    getOne(id) {
+        logger.log(`get subtask ${id} from teambition`);
+        return Fetch.get(`/subtasks/${id}`);
     }
     getList() {
-        return this._http.request({
-            url: '/v2/tasks/me/subtasks'
-        });
+        logger.log('get subtask list from teambition');
+        return Fetch.get('/v2/tasks/me/subtasks');
     }
-    addOne(data, unionFlag = '_id') {}
-    addList(data, unionFlag = '_id') {}
-    updateOne(id, isDone) {
-        return this._http.request({
-            url: `/subtasks/${id}/isDone`,
-            data: {
-                isDone: Boolean(isDone)
-            },
-            method: 'PUT'
-        });
+    updateStatus(id, status) {
+        logger.log(`update status of subtask ${id} to ${status} in teambition`);
+        return Fetch.put(`/subtasks/${id}/isDone`, {isDone: Boolean(status)});
     }
 }
 
-export default TBSubTask;
+export default new TBSubTask();
