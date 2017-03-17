@@ -1,7 +1,7 @@
 import Model from './model';
 import Cache from '../utils/cache';
+import {getObjectByKeyValue, patchApply} from '../utils/util';
 import Logger from '../utils/logger';
-
 let logger = new Logger('[models/task-model]');
 
 class TaskModel {
@@ -33,6 +33,8 @@ class TaskModel {
         logger.log(`add task ${data[unionFlag]} to cache`);
         let model = new Model(data, true);
         Cache.set(`task:${data[unionFlag]}`, model);
+        logger.log(`add task ${data[unionFlag]} to the task list in cache`);
+        this._addItemToList(model);
         return model.get();
     }
     addList(data, unionFlag = '_id') {
@@ -55,7 +57,23 @@ class TaskModel {
         logger.log(`update task ${id} in cache`);
         let task = Cache.get(`task:${id}`);
         task.update(patch);
+        logger.log(`update task ${id} to the task list in cache`);
+        this._updateItemInList(task);
         return task.get();
+    }
+    _addItemToList(item) {
+        let model = Cache.get('task:list');
+        model.data.push(item.data);
+        logger.log('update task list in cache');
+        model.update(model.data);
+    }
+    _updateItemInList(item) {
+        let model = Cache.get('task:list');
+        let id = item._id;
+        let updatedItem = getObjectByKeyValue(model.data, '_id', id);
+        patchApply(updatedItem, item);
+        logger.log('update task list in cache');
+        model.update(model.data);
     }
 }
 

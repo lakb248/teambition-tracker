@@ -58,26 +58,15 @@ let getTaskByStatus = (tasks, status) => {
 let startTask = (task, timer = 0) => {
     logger.log(`start task ${task._id}`);
 
-    if (timer === 0) {
-        var now = new Date().getTime();
-        task.lastStartTime = now;
-    }
-    task.timer = timer;
-    task.status = TASK_STATUS.PLAYING;
     let taskSub = TaskService.updateStatus(task._id, {
         objectId: task.objectId,
-        status: task.status,
-        lastStartTime: task.lastStartTime
+        status: TASK_STATUS.PLAYING,
+        lastStartTime: timer === 0 ? new Date().getTime() : task.lastStartTime
     }).subscribe(res => {
         logger.log(`start task ${task._id} success!!!`);
     });
 
     subscriptions.push(taskSub);
-
-    // start task timer
-    taskTimer = setInterval(() => {
-        task.timer += 1000;
-    }, 1000);
 };
 
 /**
@@ -91,16 +80,13 @@ let startTask = (task, timer = 0) => {
  */
 let pauseTask = (task, userId, subtaskId) => {
     logger.log(`pause task ${task._id} and clear task timer`);
-
-    task.timer = 0;
-    task.status = TASK_STATUS.PAUSE;
     let taskSub = TaskService.updateStatus(task._id, {
         objectId: task.objectId,
-        status: task.status
+        status: TASK_STATUS.PAUSE
+    }).subscribe(() => {
+        logger.log(`pause task ${task._id} success!!!`);
     });
     subscriptions.push(taskSub);
-    // stop the timer
-    clearInterval(taskTimer);
 
     // create a new activivty
     let activity = {};
@@ -113,6 +99,22 @@ let pauseTask = (task, userId, subtaskId) => {
             logger.log('activity create success!!!');
         });
     subscriptions.push(actSub);
+};
+
+/**
+ * reset task interval timer
+ * @param {Array} tasks the task list
+ */
+let resetTaskInterval = tasks => {
+    logger.log('reset task timer');
+    let pTask = getTaskByStatus(tasks, TASK_STATUS.PLAYING);
+    if (pTask != null) {
+        taskTimer = setInterval(() => {
+            pTask.timer += 1000;
+        }, 1000);
+    } else {
+        clearInterval(taskTimer);
+    }
 };
 
 export default {
@@ -199,11 +201,7 @@ export default {
         let taskSub = TaskService.getList().subscribe(tasks => {
             logger.log('get task list from task service');
             this.tasks = tasks;
-            let pTask = getTaskByStatus(tasks, TASK_STATUS.PLAYING);
-            if (pTask != null) {
-                // start task on init
-                startTask(pTask, new Date() - pTask.lastStartTime);
-            }
+            resetTaskInterval(tasks);
         });
         subscriptions.push(taskSub);
     },

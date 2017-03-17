@@ -54,7 +54,8 @@ class ActivityModel {
     }
     updateOne(id, data) {
         let cache = Cache.get(`activity:${id}`);
-        return cache.update(data);
+        cache.update(data);
+        return cache.get();
     }
     _updateItemInList(item) {
         let model = Cache.get('activity:list');
