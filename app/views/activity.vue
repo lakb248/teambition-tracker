@@ -11,9 +11,9 @@
             </ul>
             <div class="today-selector" @click="jumpToToday()">今天</div>
             <div class="month-selector">
-                <i class="fui-arrow-left" @click="lastMonth()"></i>
+                <i class="iconfont icon-arrow-left" @click="lastMonth()"></i>
                 <div class="month-selector--view">{{year}}年{{month}}月</div>
-                <i class="fui-arrow-right" @click="nextMonth()"></i>
+                <i class="iconfont icon-arrow-right" @click="nextMonth()"></i>
             </div>
         </div>
         <activity-calendar :month="month" :year="year" :activity="activity"></activity-calendar>

@@ -1,9 +1,9 @@
 <template>
     <div class="task-card card"
         :class="[priorityClass]">
-        <i class="task-card--setup" :class="{
-                    'fui-play': !isPlay,
-                    'fui-pause': isPlay
+        <i class="task-card--setup iconfont" :class="{
+                    'icon-play': !isPlay,
+                    'icon-pause': isPlay
                 }"
             @click="toggleTaskStatus()"
                 ></i>
@@ -24,7 +24,7 @@
             </div>
             <div class="task-card--line" v-if="task.subtaskCount.total > 0">
                 <div class="task-card--subtasks" @click="toggleSubTask()">
-                    <i class="fui-list-bulleted"></i>
+                    <i class="iconfont icon-list-columned"></i>
                     {{task.subtaskCount.done}}/{{task.subtaskCount.total}}
                 </div>
             </div>
@@ -37,7 +37,7 @@
             </div>
             <div class="task-card--line" v-show="isPlay">
                 <div class="task-card--timer">
-                    <i class="fui-time"></i>
+                    <i class="iconfont icon-clock"></i>
                     <span>{{timer}}</span>
                 </div>
             </div>
@@ -155,7 +155,7 @@ export default {
             float: left;
             width: 20px;
             height: 20px;
-            font-size: 10px;
+            font-size: 20px;
             line-height: 20px;
             text-align: center;
             margin-right: 5px;
@@ -179,6 +179,7 @@ export default {
                 display: inline-block;
                 width: 10px;
                 height: 10px;
+                font-size: 10px;
             }
         }
         &--dueDate {
@@ -210,6 +211,9 @@ export default {
         &--timer {
             float: left;
             font-size: 12px;
+            i {
+                font-size: 12px;
+            }
         }
     }
     .member-avatar {

@@ -1,5 +1,5 @@
 @import "./theme.scss";
-@import "./glyphicons.scss";
+@import "./iconfont.scss";
 @import "./common.scss";
 
 
@@ -26,7 +26,7 @@ $header-height: 50px;
         height: $nav-width;
         text-align: center;
         line-height: $nav-width;
-        font-size: 18px;
+        font-size: 20px;
         color: $white;
         text-decoration: none;
     }

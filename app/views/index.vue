@@ -2,7 +2,7 @@
     <div class="main-panel">
         <div class="project-panel">
             <div class="search-panel">
-                <i class="fui-search"></i>
+                <i class="iconfont icon-search"></i>
                 <input placeholder="搜索" type="text" v-model="projectSearchKey">
             </div>
             <ul class="project-list">

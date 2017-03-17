@@ -6,7 +6,7 @@
             <p class="project-overview--createtime">{{project.created}}</p>
             <p class="project-overview--createtime">04:23 h</p>
         </div>
-        <i class="fui-eye project-card--more" @click.stop="onProjectDetail(project._id)"></i>
+        <i class="iconfont icon-eye project-card--more" @click.stop="onProjectDetail(project._id)"></i>
     </div>
 </template>
 

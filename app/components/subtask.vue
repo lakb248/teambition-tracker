@@ -1,9 +1,9 @@
 <template>
     <div class="subtask">
         <div class="subtask--line">
-            <i class="subtask--setup" :class="{
-                        'fui-checkbox-unchecked': !subtask.isDone,
-                        'fui-checkbox-checked': subtask.isDone
+            <i class="subtask--setup iconfont" :class="{
+                        'icon-checkbox-unchecked': !subtask.isDone,
+                        'icon-checkbox-checked': subtask.isDone
                     }"
                 @click="toggleDoneStatus()"
                     ></i>
@@ -46,7 +46,8 @@ export default {
             float: left;
             width: 20px;
             height: 20px;
-            font-size: 14px;
+            font-size: 18px;
+            color: $black;
             line-height: 20px;
             text-align: center;
             cursor: pointer;
