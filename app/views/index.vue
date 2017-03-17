@@ -33,6 +33,7 @@ import {getObjectByKeyValue} from '../utils/util';
 import Logger from '../utils/logger';
 
 let taskTimer = -1;
+let subscriptions = [];
 let logger = new Logger('[index.vue]');
 
 let getTaskByStatus = (tasks, status) => {
@@ -63,13 +64,15 @@ let startTask = (task, timer = 0) => {
     }
     task.timer = timer;
     task.status = TASK_STATUS.PLAYING;
-    TaskService.updateStatus(task._id, {
+    let taskSub = TaskService.updateStatus(task._id, {
         objectId: task.objectId,
         status: task.status,
         lastStartTime: task.lastStartTime
     }).subscribe(res => {
         logger.log(`start task ${task._id} success!!!`);
     });
+
+    subscriptions.push(taskSub);
 
     // start task timer
     taskTimer = setInterval(() => {
@@ -91,11 +94,11 @@ let pauseTask = (task, userId, subtaskId) => {
 
     task.timer = 0;
     task.status = TASK_STATUS.PAUSE;
-    TaskService.updateStatus(task._id, {
+    let taskSub = TaskService.updateStatus(task._id, {
         objectId: task.objectId,
         status: task.status
     });
-
+    subscriptions.push(taskSub);
     // stop the timer
     clearInterval(taskTimer);
 
@@ -105,10 +108,11 @@ let pauseTask = (task, userId, subtaskId) => {
     activity.end = new Date().getTime();
     activity.taskId = task._id;
     activity.userId = userId;
-    ActivityService.addOne(activity)
+    let actSub = ActivityService.addOne(activity)
         .subscribe(activity => {
             logger.log('activity create success!!!');
         });
+    subscriptions.push(actSub);
 };
 
 export default {
@@ -152,9 +156,10 @@ export default {
         },
         onProjectShow(projectId) {
             logger.log(`show project ${projectId}`);
-            ProjectService.getOne(projectId).subscribe(project => {
+            let projectSub = ProjectService.getOne(projectId).subscribe(project => {
                 this.showedProject = project;
             });
+            subscriptions.push(projectSub);
         },
         onTaskStatusChange(event) {
             logger.log(`change status of task ${event.id} to ${event.status}`);
@@ -176,20 +181,22 @@ export default {
         onDoneStatusChange(event) {
             logger.log(`set done status of subtask ${event.id} to ${event.isDone}`);
             if (event.type === 'subtask') {
-                SubtaskService.updateStatus(event.id, event.isDone)
-                    .subscribe(res => {
-                        logger.log('done status change success!!!');
-                    });
+                let subtaskSub = SubtaskService.updateStatus(event.id, event.isDone)
+                                    .subscribe(res => {
+                                        logger.log('done status change success!!!');
+                                    });
+                subscriptions.push(subtaskSub);
             }
         }
     },
     mounted() {
         clearInterval(taskTimer);
-        ProjectService.getList().subscribe(projects => {
+        let projectSub = ProjectService.getList().subscribe(projects => {
             logger.log('get project list from project service');
             this.projects = projects;
         });
-        TaskService.getList().subscribe(tasks => {
+        subscriptions.push(projectSub);
+        let taskSub = TaskService.getList().subscribe(tasks => {
             logger.log('get task list from task service');
             this.tasks = tasks;
             let pTask = getTaskByStatus(tasks, TASK_STATUS.PLAYING);
@@ -198,6 +205,14 @@ export default {
                 startTask(pTask, new Date() - pTask.lastStartTime);
             }
         });
+        subscriptions.push(taskSub);
+    },
+    beforeDestroy() {
+        logger.log('beforeDestroy: unsubscribe all subscriptions');
+        subscriptions.forEach(subscription => {
+            subscription.unsubscribe();
+        });
+        subscriptions = [];
     }
 };
 
