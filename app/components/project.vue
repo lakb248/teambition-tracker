@@ -4,17 +4,24 @@
         <div class="project-overview">
             <p class="project-overview--name">{{project.name}}</p>
             <p class="project-overview--createtime">{{project.created}}</p>
-            <p class="project-overview--createtime">04:23 h</p>
+            <p class="project-overview--createtime">{{cost}}</p>
         </div>
         <i class="iconfont icon-eye project-card--more" @click.stop="onProjectDetail(project._id)"></i>
     </div>
 </template>
 
 <script>
+import {millisecondsToObject} from '../utils/util';
 export default {
     props: ['project'],
     data() {
         return {};
+    },
+    computed: {
+        cost() {
+            let obj = millisecondsToObject(this.project.cost);
+            return obj.hours + 'h ' + obj.minutes + 'm ' + obj.seconds + 's';
+        }
     },
     methods: {
         onProjectClick(projectId) {
