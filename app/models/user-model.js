@@ -33,6 +33,11 @@ class UserModel {
         return me.get();
     }
     addMembers(data) {
+        let cache = Cache.get('members');
+        if (cache) {
+            logger.log('update members in cache(addMembers)');
+            return cache.update(data).concatMap(() => cache.get());
+        }
         logger.log('add members to cache');
         let members = new Model(data, true);
         Cache.set('members', members);

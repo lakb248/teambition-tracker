@@ -59,16 +59,10 @@ class TaskFetch {
     _mergeTask(tbTask, avTask) {
         // get status of task
         let status = avTask ? avTask.status : STATUS.PAUSE;
-        // get timer of task
-        let timer = 0;
         let lastStartTime = avTask ? avTask.lastStartTime : new Date();
-        if (status === STATUS.PLAYING) {
-            timer = new Date().getTime() - lastStartTime;
-        }
         tbTask.objectId = avTask ? avTask.objectId : undefined;
         tbTask.status = status;
         tbTask.lastStartTime = lastStartTime;
-        tbTask.timer = timer;
         return tbTask;
     }
 }

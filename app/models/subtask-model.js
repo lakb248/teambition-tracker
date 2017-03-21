@@ -34,9 +34,18 @@ class SubtaskModel {
         return model.get();
     }
     addList(data, unionFlag = '_id') {
-        logger.log('add subtask list to cache');
-        let model = new Model(data, true);
-        Cache.set('subtask:list', model);
+        let result = null;
+        let cache = Cache.get('subtask:list');
+        if (cache) {
+            logger.log('update subtask list in cache(addList)');
+            cache.update(data);
+            result = cache.get();
+        } else {
+            logger.log('add subtask list to cache');
+            let model = new Model(data, true);
+            Cache.set('subtask:list', model);
+            result = model.get();
+        }
         data.forEach(item => {
             let flag = `subtask:${item[unionFlag]}`;
             let cache = Cache.get(flag);
@@ -47,7 +56,7 @@ class SubtaskModel {
                 Cache.set(flag, subtask);
             }
         });
-        return model.get();
+        return result;
     }
     updateOne(id, patch) {
         logger.log(`update subtask ${id} in cache`);

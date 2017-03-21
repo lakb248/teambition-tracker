@@ -1,5 +1,6 @@
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {clone, patchApply} from '../utils/util';
+import {Observable} from 'rxjs/Observable';
 
 class Model {
     constructor(data, isComplete, parents) {
@@ -16,9 +17,12 @@ class Model {
     }
     update(patch) {
         this.data = patchApply(this.data, patch);
-        this._notify(this.data);
+        this.notify(this.data);
+        return Observable.create(subscribe => {
+            subscribe.next(this.data);
+        });
     }
-    _notify(data) {
+    notify(data) {
         this._subject.next(clone(data));
     }
 }

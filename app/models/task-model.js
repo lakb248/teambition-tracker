@@ -34,13 +34,22 @@ class TaskModel {
         let model = new Model(data, true);
         Cache.set(`task:${data[unionFlag]}`, model);
         logger.log(`add task ${data[unionFlag]} to the task list in cache`);
-        this._addItemToList(model);
+        this._addItemToList(model.data);
         return model.get();
     }
     addList(data, unionFlag = '_id') {
-        logger.log('add task list to cache');
-        let model = new Model(data, true);
-        Cache.set('task:list', model);
+        let result = null;
+        let taskList = Cache.get('task:list');
+        if (taskList) {
+            logger.log('update task list in cache(addList)');
+            taskList.update(data);
+            result = taskList.get();
+        } else {
+            logger.log('add task list to cache');
+            let model = new Model(data, true);
+            Cache.set('task:list', model);
+            result = model.get();
+        }
         data.forEach(item => {
             let flag = `task:${item[unionFlag]}`;
             let cache = Cache.get(flag);
@@ -51,19 +60,19 @@ class TaskModel {
                 Cache.set(flag, task);
             }
         });
-        return model.get();
+        return result;
     }
     updateOne(id, patch) {
         logger.log(`update task ${id} in cache`);
         let task = Cache.get(`task:${id}`);
         task.update(patch);
         logger.log(`update task ${id} to the task list in cache`);
-        this._updateItemInList(task);
+        this._updateItemInList(task.data);
         return task.get();
     }
     _addItemToList(item) {
         let model = Cache.get('task:list');
-        model.data.push(item.data);
+        model.data.push(item);
         logger.log('update task list in cache');
         model.update(model.data);
     }

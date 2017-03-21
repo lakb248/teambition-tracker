@@ -109,6 +109,8 @@ let resetTaskInterval = tasks => {
     logger.log('reset task timer');
     let pTask = getTaskByStatus(tasks, TASK_STATUS.PLAYING);
     if (pTask != null) {
+        // calculate timer of task by lastStartTime
+        pTask.timer = new Date().getTime() - pTask.lastStartTime;
         taskTimer = setInterval(() => {
             pTask.timer += 1000;
         }, 1000);
@@ -193,11 +195,13 @@ export default {
     },
     mounted() {
         clearInterval(taskTimer);
+        logger.log('get project list');
         let projectSub = ProjectService.getList().subscribe(projects => {
             logger.log('get project list from project service');
             this.projects = projects;
         });
         subscriptions.push(projectSub);
+        logger.log('get task list');
         let taskSub = TaskService.getList().subscribe(tasks => {
             logger.log('get task list from task service');
             this.tasks = tasks;

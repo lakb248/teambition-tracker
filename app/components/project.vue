@@ -4,7 +4,7 @@
         <div class="project-overview">
             <p class="project-overview--name">{{project.name}}</p>
             <p class="project-overview--createtime">{{project.created}}</p>
-            <p class="project-overview--createtime">{{cost}}</p>
+            <p class="project-overview--cost">{{cost}}</p>
         </div>
         <i class="iconfont icon-eye project-card--more" @click.stop="onProjectDetail(project._id)"></i>
     </div>
@@ -81,6 +81,14 @@ export default {
             line-height: 15px;
             color: $gray;
             margin-bottom: 2px;
+        }
+        &--cost {
+            float: left;
+            font-size: 10px;
+            color: $black;
+            padding: 0px 5px;
+            border-radius: 2px;
+            background-color: $light-gray;
         }
     }
 </style>

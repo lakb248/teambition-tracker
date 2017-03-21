@@ -58,6 +58,7 @@ let setAvObjectByPlainObject = (avObject, plainObject) => {
     }
 };
 let millisecondsToObject = milliseconds => {
+    milliseconds = milliseconds || 0;
     let totalSeconds = Math.floor(milliseconds / 1000);
     let seconds = totalSeconds % 60;
     totalSeconds = Math.floor(totalSeconds / 60);
