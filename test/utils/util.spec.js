@@ -5,7 +5,8 @@ import {
     getObjectByKeyValue,
     setAvObjectByPlainObject,
     millisecondsToObject,
-    getObjectFromAVRes
+    getObjectFromAVRes,
+    clone
 } from '../../app/utils/util';
 
 // isArray
@@ -127,3 +128,28 @@ describe('utils/util.js === getObjectFromAVRes', () => {
         expect(getObjectFromAVRes({id: '1'})).toEqual({objectId: '1'});
     });
 });
+
+// clone
+describe('utils/util.js === clone', () => {
+    it('should return undefined if no input', () => {
+        expect(clone()).toBe(undefined);
+    });
+    it('should return a new array if input is an array', () => {
+        let input = [1, 2, 3];
+        expect(clone(input)).toEqual(input);
+        expect(clone(input)).not.toBe(input);
+    });
+    it('should return a new object if input is an object', () => {
+        let input = {
+            a: {
+                name: 'a'
+            },
+            b: 1
+        };
+        expect(clone(input)).toEqual(input);
+        expect(clone(input)).not.toBe(input);
+    });
+});
+
+// patchApply
+describe('utils/util.js === patchApply', () => {});
