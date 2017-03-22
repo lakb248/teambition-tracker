@@ -6,7 +6,8 @@ import {
     setAvObjectByPlainObject,
     millisecondsToObject,
     getObjectFromAVRes,
-    clone
+    clone,
+    patchApply
 } from '../../app/utils/util';
 
 // isArray
@@ -152,4 +153,20 @@ describe('utils/util.js === clone', () => {
 });
 
 // patchApply
-describe('utils/util.js === patchApply', () => {});
+describe('utils/util.js === patchApply', () => {
+    it('should return null if no input', () => {
+        expect(patchApply()).toEqual(null);
+    });
+    it('should return the origin data if patch is undefined', () => {
+        let data = {a: 1};
+        expect(patchApply(data)).toBe(data);
+    });
+    it('should return the data after apply the patch', () => {
+        let data = {a: 1};
+        let patch = {b: 2};
+        expect(patchApply(data, patch)).toEqual({
+            a: 1,
+            b: 2
+        });
+    });
+});

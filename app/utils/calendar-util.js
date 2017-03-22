@@ -39,7 +39,7 @@ export default {
             }
             return 28;
         default:
-            return;
+            return 30;
         }
     },
 

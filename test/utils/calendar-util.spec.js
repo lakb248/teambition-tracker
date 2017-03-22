@@ -25,6 +25,9 @@ describe('utils/calendar-util.js === getMaxDayOfMonth', () => {
     it('should have 29 days in 2016.02', () => {
         expect(Calendar.getMaxDayOfMonth(2016, 2)).toBe(29);
     });
+    it('should return 30 if input is invalid', () => {
+        expect(Calendar.getMaxDayOfMonth(2017, 13)).toBe(30);
+    });
 });
 
 // getFirstDayOfMonth
