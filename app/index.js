@@ -35,6 +35,12 @@ const Activity = resolve => {
     });
 };
 
+const Statistic = resolve => {
+    require.ensure(['./views/statistic.vue'], () => {
+        resolve(require('./views/statistic.vue'));
+    });
+};
+
 let router = new Router({
     routes: [{
         path: '/',
@@ -42,6 +48,9 @@ let router = new Router({
     }, {
         path: '/activity',
         component: Activity
+    }, {
+        path: '/statistic',
+        component: Statistic
     }]
 });
 
