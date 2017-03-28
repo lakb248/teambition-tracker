@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "webpack-dev-server --watch --progress --config webpack.dev.config.js --port 8080",
-    "build": "webpack --color --progress --config webpack.prod.config.js",
+    "build": "rimraf build/ && webpack --color --progress --config webpack.prod.config.js",
     "test": "NODE_ENV=production karma start karma.config.js",
     "dev-test": "NODE_ENV=develop karma start karma.config.js"
   },
@@ -62,7 +62,7 @@
     "postcss-cssnext": "^2.9.0",
     "postcss-loader": "^1.1.0",
     "proxy-middleware": "^0.15.0",
-    "rimraf": "^2.5.2",
+    "rimraf": "^2.6.1",
     "sass-loader": "^4.0.2",
     "style-loader": "^0.13.0",
     "url-loader": "^0.5.7",
@@ -71,6 +71,7 @@
     "vue-loader": "^9.7.0",
     "vue-style-loader": "^1.0.0",
     "webpack": "^2.1.0-beta.2",
+    "webpack-bundle-analyzer": "^2.3.1",
     "webpack-dev-server": "^2.1.0-beta.0",
     "webpack-merge": "^0.15.0"
   }
