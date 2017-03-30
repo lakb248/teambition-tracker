@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 import {getToken, checkToken, refreshToken} from './utils/authorize';
-import UserAPI from './api/user-api';
+import UserService from './services/user-service';
 import EventEmitter from './utils/event';
 import Fetch from './fetch/fetch';
 import Logger from './utils/logger';
@@ -71,7 +71,7 @@ if (token === '') {
         .then(success => {
             if (success) {
                 Fetch.setToken(token);
-                UserAPI.me()
+                UserService.me()
                     .map(res => {
                         App.me = res;
                         App._userId = res._id;
