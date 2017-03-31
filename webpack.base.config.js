@@ -29,8 +29,7 @@ module.exports = {
                 {
                     notExtractLoader: 'style-loader',
                     loader: 'css-loader!sass-loader'
-                }),
-            exclude: /node_modules/
+                })
         }, {
             test: /\.(png|woff|woff2|eot|ttf|svg)$/,
             loader: 'url-loader?limit=8192'
