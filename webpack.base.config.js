@@ -18,16 +18,16 @@ module.exports = {
     module: {
         rules: [{
             test: /\.js$/,
-            loader: 'babel-loader',
+            use: 'babel-loader',
             exclude: /node_modules/
         }, {
             test: /\.vue$/,
-            loader: 'vue-loader'
+            use: 'vue-loader'
         }, {
             test: /\.scss$/,
-            loader: ExtractTextPlugin.extract(
+            use: ExtractTextPlugin.extract(
                 {
-                    notExtractLoader: 'style-loader',
+                    fallback: 'style-loader',
                     loader: 'css-loader!sass-loader'
                 })
         }, {
