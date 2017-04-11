@@ -4,10 +4,9 @@
 var webpack = require('webpack');
 var path = require('path');
 var config = require('./webpack.base.config');
-var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 config.output.filename = '[chunkhash].[name].js';
 config.performance = {
-    hints: true
+    hints: 'warning'
 };
 config.plugins = (config.plugins || []).concat([
     new webpack.DefinePlugin({
@@ -33,7 +32,6 @@ config.plugins = (config.plugins || []).concat([
         compress: {
             warnings: false
         }
-    }),
-    new BundleAnalyzerPlugin()
+    })
 ]);
 module.exports = config;

@@ -18,21 +18,21 @@ module.exports = {
     module: {
         rules: [{
             test: /\.js$/,
-            loader: 'babel-loader',
+            use: 'babel-loader',
             exclude: /node_modules/
         }, {
             test: /\.vue$/,
-            loader: 'vue-loader'
+            use: 'vue-loader'
         }, {
             test: /\.scss$/,
-            loader: ExtractTextPlugin.extract(
+            use: ExtractTextPlugin.extract(
                 {
-                    notExtractLoader: 'style-loader',
-                    loader: 'css-loader!sass-loader'
+                    fallback: 'style-loader',
+                    use: 'css-loader!sass-loader'
                 })
         }, {
             test: /\.(png|woff|woff2|eot|ttf|svg)$/,
-            loader: 'url-loader?limit=8192'
+            use: 'url-loader?limit=8192'
         }]
     },
     resolve: {
