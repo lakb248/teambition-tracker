@@ -32,7 +32,7 @@ module.exports = {
                     use: 'css-loader!sass-loader'
                 })
         }, {
-            test: /\.(png|woff|woff2|eot|ttf|svg)$/,
+            test: /\.(png|woff|woff2|eot|ttf|svg|gif)$/,
             use: 'url-loader?limit=8192'
         }]
     },

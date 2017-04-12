@@ -83,6 +83,17 @@ $user-header-width: $header-height - 14;
     left: 0px;
     bottom: 0px;
     right: 0px;
-    background-color: rgba(0,0,0,0.6);
+    background-color: #2a80b9;
     z-index: 99;
+    &-img {
+        position: absolute;
+        width: 400px;
+        height: 300px;
+        top: 50%;
+        left: 50%;
+        margin-left: -200px;
+        margin-top: -150px;
+        background: url(../asserts/img/loading.gif) no-repeat center center;
+        background-size: 50%;
+    }
 }
