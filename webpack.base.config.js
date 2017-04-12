@@ -4,6 +4,7 @@
 var path = require('path');
 var webpack = require('webpack');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
+var HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
     entry: {
@@ -11,7 +12,7 @@ module.exports = {
     },
     output: {
         path: path.resolve('build') + '/',
-        publicPath: '/build/',
+        publicPath: '',
         filename: '[name].js',
         chunkFilename: '[chunkhash].[name].js'
     },
@@ -41,12 +42,16 @@ module.exports = {
         }
     },
     plugins: [
-        new ExtractTextPlugin('index.css'),
+        new ExtractTextPlugin('[contenthash].[name].css'),
         new webpack.LoaderOptionsPlugin({
             vue: {
                 postcss: [require('postcss-cssnext')({browsers: [
                     '> 1%', 'last 5 Android versions', 'last 5 iOS versions']})]
             }
+        }),
+        new HtmlWebpackPlugin({
+            template: './index.html',
+            inject: true
         })
     ]
 };
