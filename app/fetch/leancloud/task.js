@@ -5,7 +5,7 @@ import 'rxjs/add/observable/fromPromise';
 import Logger from '../../utils/logger';
 
 class AVTask extends AV.Object {}
-AV.Object.register(AVTask);
+AV.Object.register(AVTask, 'AVTask');
 
 let logger = new Logger('[fetch/leancloud/task]');
 

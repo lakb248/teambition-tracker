@@ -1,6 +1,6 @@
 import AV from './leancloud';
 class AVActivity extends AV.Object {}
-AV.Object.register(AVActivity);
+AV.Object.register(AVActivity, 'AVActivity');
 
 import {getObjectFromAVRes} from '../../utils/util';
 
