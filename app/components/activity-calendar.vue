@@ -134,7 +134,7 @@ export default {
         }
         &--weekname {
             float: left;
-            width: 14.286%;
+            width: 14.28%;
             height: 40px;
             padding-left: 5px;
             &.weekend {
