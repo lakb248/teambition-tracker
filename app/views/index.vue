@@ -6,6 +6,7 @@
                 <input placeholder="搜索" type="text" v-model="projectSearchKey">
             </div>
             <ul class="project-list">
+                <li v-show="isProjectLoading" class="card data-loading"></li>
                 <li v-for="project in filteredProject">
                     <project :project="project" @project-selected="onProjectSelected" @project-show="onProjectShow"></project>
                 </li>
@@ -13,6 +14,7 @@
         </div>
         <div class="task-panel">
             <ul>
+                <li v-show="isTaskLoading" class="card data-loading"></li>
                 <li v-for="task in filteredTask" style="margin-bottom: 10px;">
                     <task :task="task" @status-change="onTaskStatusChange" @done-status-change="onDoneStatusChange"></task>
                 </li>
@@ -127,7 +129,9 @@ export default {
             showedProject: {},
             projectSearchKey: '',
             selectedProjectId: -1,
-            userId: -1
+            userId: -1,
+            isProjectLoading: true,
+            isTaskLoading: true
         };
     },
     components: {
@@ -199,12 +203,14 @@ export default {
         let projectSub = ProjectService.getList().subscribe(projects => {
             logger.log('get project list from project service');
             this.projects = projects;
+            this.isProjectLoading = false;
         });
         subscriptions.push(projectSub);
         logger.log('get task list');
         let taskSub = TaskService.getList().subscribe(tasks => {
             logger.log('get task list from task service');
             this.tasks = tasks;
+            this.isTaskLoading = false;
             resetTaskInterval(tasks);
         });
         subscriptions.push(taskSub);
@@ -265,5 +271,12 @@ export default {
             font-size: 14px;
             background-color: $light-gray;
         }
+    }
+    .data-loading {
+        width: 100%;
+        height: 60px;
+        background: url(../asserts/img/data-loading.gif) no-repeat center center;
+        background-size: 400px 300px;
+        background-color: $white;
     }
 </style>
