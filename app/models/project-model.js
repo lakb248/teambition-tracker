@@ -1,11 +1,15 @@
 import Model from './model';
+import BaseModel from './base-model';
 import Cache from '../utils/cache';
 import Logger from '../utils/logger';
 import 'rxjs/add/operator/concatMap';
 
 let logger = new Logger('[models/project-model]');
 
-class ProjectModel {
+class ProjectModel extends BaseModel {
+    constructor() {
+        super('project');
+    }
     addOne(data, unionFlag = '_id') {
         let cache = Cache.get(`project:${data[unionFlag]}`);
         // update cache and return the updated data
@@ -19,13 +23,13 @@ class ProjectModel {
         return model.get();
     }
     addList(data, unionFlag = '_id') {
-        logger.log('add project list to cache');
         let cache = Cache.get('project:list');
         let model = cache;
         if (cache) {
-            logger.log('update project list in cache');
+            logger.log('update project list in cache(addList)');
             cache.update(data);
         } else {
+            logger.log('add project list to cache');
             model = new Model(data, true);
             Cache.set('project:list', model);
         }
@@ -40,22 +44,6 @@ class ProjectModel {
             }
         });
         return model.get();
-    }
-    getList() {
-        let cache = Cache.get('project:list');
-        if (cache) {
-            logger.log('get project list from cache');
-            return cache.get();
-        }
-        return null;
-    }
-    getOne(id) {
-        let cache = Cache.get(`project:${id}`);
-        if (cache && cache.isComplete) {
-            logger.log(`get project ${id} from cache`);
-            return cache.get();
-        }
-        return null;
     }
     updateOne(id, data) {
         let cache = Cache.get(`project:${id}`);

@@ -1,26 +1,14 @@
 import Model from './model';
+import BaseModel from './base-model';
 import Cache from '../utils/cache';
 import {getObjectByKeyValue, patchApply} from '../utils/util';
 import Logger from '../utils/logger';
 
 let logger = new Logger('[models/activity-model]');
 
-class ActivityModel {
-    getOne(id) {
-        let cache = Cache.get(`activity:${id}`);
-        if (cache && cache.isComplete) {
-            logger.log(`get activity ${id} from cache`);
-            return cache.get();
-        }
-        return null;
-    }
-    getList() {
-        let cache = Cache.get('activity:list');
-        if (cache) {
-            logger.log('get activity list from cache');
-            return cache.get();
-        }
-        return null;
+class ActivityModel extends BaseModel {
+    constructor() {
+        super('activity');
     }
     addOne(data, unionFlag = 'objectId') {
         let cache = Cache.get(`activity:${data[unionFlag]}`);
@@ -37,13 +25,13 @@ class ActivityModel {
         return model.get();
     }
     addList(data, unionFlag = 'objectId') {
-        logger.log('add activity list to cache');
         let cache = Cache.get('activity:list');
         let model = cache;
         if (cache) {
-            logger.log('update activity list in cache');
+            logger.log('update activity list in cache(addList)');
             cache.update(data);
         } else {
+            logger.log('add activity list to cache');
             model = new Model(data, true);
             Cache.set('activity:list', model);
         }

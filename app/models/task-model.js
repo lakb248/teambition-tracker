@@ -1,25 +1,13 @@
 import Model from './model';
+import BaseModel from './base-model';
 import Cache from '../utils/cache';
 import {getObjectByKeyValue, patchApply} from '../utils/util';
 import Logger from '../utils/logger';
 let logger = new Logger('[models/task-model]');
 
-class TaskModel {
-    getOne(id) {
-        let cache = Cache.get(`task:${id}`);
-        if (cache && cache.isComplete) {
-            logger.log(`get task ${id} from cache`);
-            return cache.get();
-        }
-        return null;
-    }
-    getList() {
-        let cache = Cache.get('task:list');
-        if (cache) {
-            logger.log('get task list from cache');
-            return cache.get();
-        }
-        return null;
+class TaskModel extends BaseModel {
+    constructor() {
+        super('task');
     }
     addOne(data, unionFlag = '_id') {
         let cache = Cache.get(`task:${data[unionFlag]}`);

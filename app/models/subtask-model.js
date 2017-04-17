@@ -1,25 +1,13 @@
 import Model from './model';
+import BaseModel from './base-model';
 import Cache from '../utils/cache';
 import {getObjectByKeyValue, patchApply} from '../utils/util';
 import Logger from '../utils/logger';
 let logger = new Logger('[models/subtask-model]');
 
-class SubtaskModel {
-    getOne(id) {
-        let cache = Cache.get(`subtask:${id}`);
-        if (cache && cache.isComplete) {
-            logger.log(`get subtask ${id} from cache`);
-            return cache.get();
-        }
-        return null;
-    }
-    getList() {
-        let cache = Cache.get('subtask:list');
-        if (cache) {
-            logger.log('get subtask list from cache');
-            return cache.get();
-        }
-        return null;
+class SubtaskModel extends BaseModel {
+    constructor() {
+        super('subtask');
     }
     addOne(data, unionFlag = '_id') {
         let cache = Cache.get(`subtask:${data[unionFlag]}`);
