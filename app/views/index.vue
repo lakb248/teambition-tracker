@@ -199,14 +199,12 @@ export default {
     },
     mounted() {
         clearInterval(taskTimer);
-        logger.log('get project list');
         let projectSub = ProjectService.getList().subscribe(projects => {
             logger.log('get project list from project service');
             this.projects = projects;
             this.isProjectLoading = false;
         });
         subscriptions.push(projectSub);
-        logger.log('get task list');
         let taskSub = TaskService.getList().subscribe(tasks => {
             logger.log('get task list from task service');
             this.tasks = tasks;

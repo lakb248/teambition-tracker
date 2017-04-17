@@ -38,8 +38,15 @@ class ActivityModel {
     }
     addList(data, unionFlag = 'objectId') {
         logger.log('add activity list to cache');
-        let model = new Model(data, true);
-        Cache.set('activity:list', model);
+        let cache = Cache.get('activity:list');
+        let model = cache;
+        if (cache) {
+            logger.log('update activity list in cache');
+            cache.update(data);
+        } else {
+            model = new Model(data, true);
+            Cache.set('activity:list', model);
+        }
         data.forEach(item => {
             let flag = `activity:${item[unionFlag]}`;
             let cache = Cache.get(flag);
