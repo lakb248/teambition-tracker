@@ -2,8 +2,9 @@
     <div class="task-card card"
         :class="[priorityClass]">
         <i class="task-card--setup iconfont" :class="{
-                    'icon-play': !isPlay,
-                    'icon-pause': isPlay
+                    'icon-play': !isPending && !isPlay,
+                    'icon-pause': !isPending && isPlay,
+                    'icon-pending': isPending
                 }"
             @click="toggleTaskStatus()"
                 ></i>
@@ -69,11 +70,13 @@ export default {
     data() {
         return {
             isSubtaskShow: false,
-            isTitleEditable: false
+            isTitleEditable: false,
+            isPending: false
         };
     },
     computed: {
         isPlay() {
+            this.isPending = false;
             return this.task.status === STATUS.PLAYING;
         },
         priorityClass() {
@@ -96,6 +99,7 @@ export default {
             this.isSubtaskShow = !this.isSubtaskShow;
         },
         toggleTaskStatus() {
+            this.isPending = true;
             let newStatus = this.task.status === STATUS.PLAYING ?
                 STATUS.PAUSE : STATUS.PLAYING;
             this.$emit('status-change', {
@@ -232,5 +236,9 @@ export default {
         font-size: 12px;
         border-radius: 2px;
         overflow: hidden;
+    }
+    .icon-pending {
+        background: url(../asserts/img/data-loading.gif) no-repeat center center;
+        background-size: 200px 150px;
     }
 </style>
